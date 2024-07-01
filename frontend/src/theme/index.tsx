@@ -1,43 +1,54 @@
 import { CSSObject, MantineThemeOverride } from "@mantine/core";
 import { heights, sizing, widths } from "./sizing";
-import { Tuple, DefaultMantineColor } from "@mantine/core";
+// import { Tuple, DefaultMantineColor } from "@mantine/core";
 
-type ExtendedCustomColors =
-  | "Primary"
-  | "P500"
-  | "secondary"
-  | "blue"  
-  | "purple"
-  | "teal"
-  | "Neutral"
-  | "N500"
-  | "Error"
-  | "E500"
-  | "Success"
-  | "S500"
-  | "Warning"
-  | "W500"
-  | "pink"
-  | DefaultMantineColor;
+// type ExtendedCustomColors =
+//   | "Primary"
+//   | "P500"
+//   | "secondary"
+//   | "blue"  
+//   | "purple"
+//   | "teal"
+//   | "Neutral"
+//   | "N500"
+//   | "Error"
+//   | "E500"
+//   | "Success"
+//   | "S500"
+//   | "Warning"
+//   | "W500"
+//   | "pink"
+//   | DefaultMantineColor;
 
-declare module "@mantine/core" {
-  export interface MantineThemeColorsOverride {
-    colors: Record<ExtendedCustomColors, Tuple<string, 10>>;
-  }
-}
+// declare module "@mantine/core" {
+//   export interface MantineThemeColorsOverride {
+//     colors: Record<ExtendedCustomColors, Tuple<string, 10>>;
+//   }
+// }
 
-const globalStyles = (): CSSObject => {
-  return {
-    "#root": {
-      overflow: "auto",
-      display: "block",
-      width: widths.screen,
-      height: heights.screen,
-      backgroundColor: "#F2F6FF",
-      fontFamily: "Roboto,Roboto Mono",
-    },
-  };
-};
+// const globalStyles = (): CSSObject => {
+//   return {
+//     "#root": {
+//       overflow: "auto",
+//       display: "block",
+//       width: widths.screen,
+//       height: heights.screen,
+//       backgroundColor: "#F2F6FF",
+//       fontFamily: "Roboto,Roboto Mono",
+//     },
+//   };
+// };
+
+const globalStyles = (): CSSObject => ({
+  "#root": {
+    overflow: "auto",
+    display: "block",
+    width: widths.screen,
+    height: heights.screen,
+    backgroundColor: "#F2F6FF",
+    fontFamily: "Roboto,Roboto Mono",
+  },
+});
 
 const myTheme: MantineThemeOverride = {
   globalStyles,
