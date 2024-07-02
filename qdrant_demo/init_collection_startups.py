@@ -1,5 +1,6 @@
 import json
 import os.path
+import os
 
 from qdrant_client import QdrantClient, models
 from tqdm import tqdm
@@ -61,7 +62,7 @@ def upload_embeddings():
         documents=documents,
         metadata=payload,
         ids=tqdm(range(len(payload))),
-        parallel=0,
+        parallel=os.cpu_count(),
     )
 
 

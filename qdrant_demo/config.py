@@ -9,6 +9,9 @@ QDRANT_URL = os.environ.get("QDRANT_URL", "http://localhost:6333/")
 QDRANT_API_KEY = os.environ.get("QDRANT_API_KEY", "")
 
 COLLECTION_NAME = os.environ.get("COLLECTION_NAME", "text-demo")
+# https://qdrant.github.io/fastembed/examples/Supported_Models/#supported-text-embedding-models
 EMBEDDINGS_MODEL = os.environ.get("EMBEDDINGS_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
+EMBEDDINGS_MODEL_JOB_TITLES = os.environ.get("EMBEDDINGS_MODEL_JOB_TITLES", "BAAI/bge-small-en")
+EMBEDDINGS_MODEL_QUESTIONS = os.environ.get("EMBEDDINGS_MODEL_QUESTIONS", "thenlper/gte-large")
 
 TEXT_FIELD_NAME = "document"
