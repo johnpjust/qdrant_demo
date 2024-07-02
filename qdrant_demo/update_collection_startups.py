@@ -87,5 +87,6 @@ def upload_embeddings(processed_file):
 
 
 if __name__ == '__main__':
+    # print(os.listdir('../'))
     processed_file = os.path.join(DATA_DIR, 'processed_data.json')
     upload_embeddings(processed_file)
