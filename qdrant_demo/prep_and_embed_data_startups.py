@@ -1,30 +1,39 @@
-import json
 import os
+import pandas as pd
 from fastembed import TextEmbedding
-from qdrant_demo.config import DATA_DIR
+from qdrant_demo.config import DATA_DIR, EMBEDDINGS_MODEL
+
 
 def prepare_embeddings(input_file, output_file):
-    model = TextEmbedding()  # Initialize the FastEmbed model
-    documents = []
-    payload = []
+    model = TextEmbedding(EMBEDDINGS_MODEL)  # Initialize the FastEmbed model
 
-    with open(input_file) as fd:
-        for line in fd:
-            obj = json.loads(line)
-            documents.append(obj.pop('description'))
-            obj["logo_url"] = obj.pop("images")
-            obj["homepage_url"] = obj.pop("link")
-            payload.append(obj)
+    # Load the JSON data into a pandas DataFrame
+    df = pd.read_json(input_file, lines=True)
+
+    # TODO delete this part after testing
+    df = df.iloc[:1000, :]
+
+    # Extract descriptions for embedding and clean up the DataFrame
+    documents = df['description'].tolist()
+    df = df.drop(columns=['description'])
+    df = df.rename(columns={'images': 'logo_url', 'link': 'homepage_url'})
 
     # FastEmbed handles parallelism internally, so just pass the documents
     embeddings_generator = model.embed(documents)
     embeddings = list(embeddings_generator)
 
-    # Save processed data
-    with open(output_file, 'w') as out_fd:
-        json.dump({'documents': documents, 'embeddings': embeddings, 'payload': payload}, out_fd)
+    # Convert embeddings from ndarray to list
+    embeddings = [embedding.tolist() for embedding in embeddings]
+
+    # Add documents and embeddings to the DataFrame
+    df['documents'] = documents
+    df['embeddings'] = embeddings
+
+    # Save DataFrame to Parquet
+    df.to_parquet(output_file, index=False)
+
 
 if __name__ == '__main__':
-    input_file = os.path.join(DATA_DIR, 'startups_demo.json')
-    output_file = os.path.join(DATA_DIR, 'processed_data.json')
-    prepare_embeddings(input_file, output_file)
+    input_file_ = os.path.join(DATA_DIR, 'startups_demo.json')
+    output_file_ = os.path.join(DATA_DIR, 'processed_data.parquet')
+    prepare_embeddings(input_file_, output_file_)

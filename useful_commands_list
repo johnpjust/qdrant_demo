@@ -1,9 +1,0 @@
-# https://qdrant.tech/documentation/concepts/collections/
-
-
-# bash commands
-# list collections
-curl -X GET http://localhost:6333/collections
-
-# get info
-curl -X GET http://localhost:6333/collections/{collection_name}
