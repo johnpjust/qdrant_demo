@@ -1,0 +1,10 @@
+1) How is multitenancy setup currently to distribute handling of clients (e.g. is unicorn used somehow by the docker container?)
+## the next questions deal with what appears to be called hybrid search (e.g. https://qdrant.tech/documentation/tutorials/hybrid-search-fastembed/)
+2) Sparse vector representation appears to be an option, and qdrant seems to suggest that's how traditional searches work. Double check this against the current code which appears to be simply a "match word" query
+3) More generally, implement multiple vector search options (multiple columns)...(do we need multiple vector configs then in the create_collection?)
+4) Note - using fastembed during specification of the collection appears to allow more dynamic/flexibility in defining the models through fastembed later.  However, does this approach allow multiple vector embedding columns?
+    As far as I can tell, just specify a dictionary for the vector embeddings upon create_collection:  https://gist.github.com/kacperlukawski/961aaa7946f55110abfcd37fbe869b8f
+##
+4) Figure out how that "filter" argument works (does that apply to "indexed" payload columns??)!
+    If it doesn't apply to indexed payload columns, then figure out what indexed payload columns do/mean!
+5)

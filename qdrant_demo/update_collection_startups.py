@@ -1,6 +1,6 @@
-import json
 import os
 import multiprocessing
+import pandas as pd
 
 from qdrant_client import QdrantClient, models
 from tqdm import tqdm
@@ -32,11 +32,11 @@ def upload_embeddings(processed_file):
         prefer_grpc=True,
     )
 
-    with open(processed_file) as fd:
-        data = json.load(fd)
-        documents = data['documents']
-        embeddings = data['embeddings']
-        payload = data['payload']
+    # Load the Parquet file into a DataFrame
+    df = pd.read_parquet(processed_file)
+    documents = df['documents'].tolist()
+    embeddings = df['embeddings'].tolist()
+    payload = df.drop(columns=['documents', 'embeddings']).to_dict(orient='records')
 
     if not client.collection_exists(COLLECTION_NAME):
         client.create_collection(
@@ -87,5 +87,5 @@ def upload_embeddings(processed_file):
 
 
 if __name__ == '__main__':
-    processed_file = os.path.join(DATA_DIR, 'processed_data.json')
-    upload_embeddings(processed_file)
+    processed_file_ = os.path.join(DATA_DIR, 'processed_data.parquet')
+    upload_embeddings(processed_file_)
