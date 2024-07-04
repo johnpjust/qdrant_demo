@@ -1,10 +1,11 @@
 import os
 import pandas as pd
 
-from qdrant_client.grpc import Distance, PointStruct, VectorParams
+
+from qdrant_client.grpc import PointStruct, VectorParams
+from qdrant_client.models import Distance
 from qdrant_client import QdrantClient, models
 from tqdm import tqdm
-
 
 from qdrant_demo.config import DATA_DIR, QDRANT_URL, QDRANT_API_KEY, COLLECTION_NAME, TEXT_FIELD_NAME, EMBEDDINGS_MODEL
 
@@ -74,7 +75,6 @@ def upload_embeddings(processed_file):
     existing_descriptions, max_id = get_existing_descriptions_and_max_id(client, COLLECTION_NAME)
 
     points = [
-
           PointStruct(
             id=max_id + i + 1,  # Generate sequential ID
             vector={dense_vector_name: embedding},
