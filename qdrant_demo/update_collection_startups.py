@@ -280,7 +280,7 @@ def upload_embeddings(processed_file):
     client = QdrantClient(
         url=QDRANT_URL,
         api_key=QDRANT_API_KEY,
-        prefer_grpc=False,
+        prefer_grpc=True,
     )
 
     # Load the Parquet file into a DataFrame
