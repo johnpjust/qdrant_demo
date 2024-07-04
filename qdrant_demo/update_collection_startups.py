@@ -120,13 +120,13 @@
 ###################################################
 import os
 import pandas as pd
+from qdrant_client.grpc import PointStruct
 from qdrant_client import QdrantClient, models
 from tqdm import tqdm
 
 from qdrant_demo.config import DATA_DIR, QDRANT_URL, QDRANT_API_KEY, COLLECTION_NAME, TEXT_FIELD_NAME, EMBEDDINGS_MODEL
 
 dense_vector_name = EMBEDDINGS_MODEL.split('/')[-1]
-
 
 def get_existing_descriptions_and_max_id(client, collection_name, batch_size=5000):
     existing_descriptions = set()
@@ -146,7 +146,6 @@ def get_existing_descriptions_and_max_id(client, collection_name, batch_size=500
             offset=response[-1].id
         )
     return existing_descriptions, max_id
-
 
 def upload_embeddings(processed_file):
     client = QdrantClient(
@@ -200,7 +199,9 @@ def upload_embeddings(processed_file):
     points = [
         {
             'id': max_id + i + 1,  # Generate sequential ID
-            'vectors': {dense_vector_name: embedding},
+            'vectors': {
+                dense_vector_name: embedding
+            },
             'payload': meta
         }
         for i, (doc, meta, embedding) in enumerate(zip(documents, payload, embeddings))
@@ -227,7 +228,6 @@ def upload_embeddings(processed_file):
             collection_name=COLLECTION_NAME,
             optimizer_config=models.OptimizersConfigDiff(indexing_threshold=20000),
         )
-
 
 if __name__ == '__main__':
     processed_file_ = os.path.join(DATA_DIR, 'processed_data.parquet')
