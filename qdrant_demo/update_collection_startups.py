@@ -82,7 +82,7 @@ def upload_embeddings(processed_file):
     ]
 
     client.update_collection(
-        collection_name="{collection_name}",
+        collection_name=COLLECTION_NAME,
         optimizer_config=models.OptimizersConfigDiff(indexing_threshold=0),
     )
 
