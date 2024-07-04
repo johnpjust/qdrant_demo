@@ -202,10 +202,10 @@ def upload_embeddings(processed_file):
         if doc not in existing_descriptions
     ]
 
-    client.update_collection(
-        collection_name=COLLECTION_NAME,
-        optimizer_config=models.OptimizersConfigDiff(indexing_threshold=0),
-    )
+    # client.update_collection(
+    #     collection_name=COLLECTION_NAME,
+    #     optimizer_config=models.OptimizersConfigDiff(indexing_threshold=0),
+    # )
 
     if points:
         # Use list comprehension to create a progress bar compatible list of points
@@ -216,15 +216,15 @@ def upload_embeddings(processed_file):
             points=points_with_progress,
         )
 
-        if response.status == 'ok':
+        if response.status == models.UpdateStatus.COMPLETED:
             print("Points uploaded successfully.")
         else:
             print(f"Failed to upload points: {response}")
 
-        client.update_collection(
-            collection_name=COLLECTION_NAME,
-            optimizer_config=models.OptimizersConfigDiff(indexing_threshold=20000),
-        )
+        # client.update_collection(
+        #     collection_name=COLLECTION_NAME,
+        #     optimizer_config=models.OptimizersConfigDiff(indexing_threshold=20000),
+        # )
 
 if __name__ == '__main__':
     processed_file_ = os.path.join(DATA_DIR, 'processed_data.parquet')
