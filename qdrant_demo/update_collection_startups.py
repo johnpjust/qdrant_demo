@@ -251,19 +251,24 @@ def get_existing_descriptions_and_max_id(client, collection_name, batch_size=500
     )
 
     while response:
+        print(f"Scroll response: {len(response)} hits")
         for hit in response:
-            # Debug statement to log the payload structure
-            # print(f"Payload: {hit.payload}")
+            print(f"Processing hit: {hit.id}")
             if TEXT_FIELD_NAME in hit.payload:
                 existing_descriptions.add(hit.payload[TEXT_FIELD_NAME])
             else:
                 print(f"Missing field '{TEXT_FIELD_NAME}' in payload: {hit.payload}")
             max_id = max(max_id, int(hit.id))
-        response, _ = client.scroll(
-            collection_name=collection_name,
-            limit=batch_size,
-            offset=response[-1].id
-        )
+        try:
+            response, _ = client.scroll(
+                collection_name=collection_name,
+                limit=batch_size,
+                offset=response[-1].id,
+                timeout=10  # Add a timeout to prevent hanging
+            )
+        except Exception as e:
+            print(f"Error during scroll: {e}")
+            break
     return existing_descriptions, max_id
 
 def upload_embeddings(processed_file):
@@ -330,6 +335,8 @@ def upload_embeddings(processed_file):
         )
 
     existing_descriptions, max_id = get_existing_descriptions_and_max_id(client, COLLECTION_NAME)
+    print(f"Existing descriptions count: {len(existing_descriptions)}")
+    print(f"Max ID: {max_id}")
 
     points = [
         PointStruct(
@@ -366,6 +373,8 @@ def upload_embeddings(processed_file):
             collection_name=COLLECTION_NAME,
             optimizer_config=models.OptimizersConfigDiff(indexing_threshold=1),
         )
+
+        print("Collection update completed.")
 
 if __name__ == '__main__':
     processed_file_ = os.path.join(DATA_DIR, 'processed_data.parquet')
