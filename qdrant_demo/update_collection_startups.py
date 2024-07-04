@@ -3,7 +3,6 @@ import pandas as pd
 
 
 from qdrant_client.grpc import PointStruct
-from qdrant_client.models import Distance, VectorParams
 from qdrant_client import QdrantClient, models
 from tqdm import tqdm
 
@@ -42,22 +41,25 @@ def upload_embeddings(processed_file):
     documents = df['documents'].tolist()
     embeddings = df['embeddings'].tolist()
     payload = df.drop(columns=['documents', 'embeddings']).to_dict(orient='records')
-
+    vector_params = {
+            "size": 384,
+            "distance": models.Distance.COSINE,
+            "hnsw_config": None,
+            "quantization_config": {
+                "scalar": {
+                    "type": models.ScalarType.INT8,
+                    "quantile": 0.99,
+                    "always_ram": True
+                }
+            },
+            "on_disk": True,
+            "datatype": None,
+            "multivector_config": None
+        }
     if not client.collection_exists(COLLECTION_NAME):
         client.create_collection(
             collection_name=COLLECTION_NAME,
-            vectors_config={dense_vector_name: VectorParams(size=384,
-                                      distance=Distance.COSINE,
-                                      hnsw_config=None,
-                                      quantization_config=models.ScalarQuantization(
-                                                        scalar=models.ScalarQuantizationConfig(
-                                                            type=models.ScalarType.INT8,
-                                                            quantile=0.99,
-                                                            always_ram=True
-                                                        )),
-                                      on_disk=True,
-                                      datatype=None,
-                                      multivector_config=None),},
+            vectors_config={dense_vector_name: vector_params,},
         )
 
         client.create_payload_index(
