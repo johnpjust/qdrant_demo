@@ -8,23 +8,24 @@ from tqdm import tqdm
 
 from qdrant_demo.config import DATA_DIR, QDRANT_URL, QDRANT_API_KEY, COLLECTION_NAME, TEXT_FIELD_NAME
 
-
-def get_existing_descriptions(client, collection_name, batch_size=5000):
+def get_existing_descriptions_and_max_id(client, collection_name, batch_size=5000):
     existing_descriptions = set()
+    max_id = 0
     response, _ = client.scroll(
         collection_name=collection_name,
         limit=batch_size,
     )
 
     while response:
-        existing_descriptions.update(hit.payload[TEXT_FIELD_NAME] for hit in response)
+        for hit in response:
+            existing_descriptions.add(hit.payload[TEXT_FIELD_NAME])
+            max_id = max(max_id, int(hit.id))
         response, _ = client.scroll(
             collection_name=collection_name,
             limit=batch_size,
             offset=response[-1].id
         )
-    return existing_descriptions
-
+    return existing_descriptions, max_id
 
 def upload_embeddings(processed_file):
     client = QdrantClient(
@@ -64,14 +65,15 @@ def upload_embeddings(processed_file):
             )
         )
 
-    existing_descriptions = get_existing_descriptions(client, COLLECTION_NAME)
+    existing_descriptions, max_id = get_existing_descriptions_and_max_id(client, COLLECTION_NAME)
 
     points = [
         PointStruct(
+            id=str(max_id + i + 1),  # Generate sequential ID
             vector=embedding,
             payload=meta
         )
-        for doc, meta, embedding in zip(documents, payload, embeddings)
+        for i, (doc, meta, embedding) in enumerate(zip(documents, payload, embeddings))
         if doc not in existing_descriptions
     ]
 
@@ -80,7 +82,6 @@ def upload_embeddings(processed_file):
             collection_name=COLLECTION_NAME,
             points=tqdm(points, desc="Uploading points")
         )
-
 
 if __name__ == '__main__':
     processed_file_ = os.path.join(DATA_DIR, 'processed_data.parquet')
