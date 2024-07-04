@@ -197,13 +197,11 @@ def upload_embeddings(processed_file):
     existing_descriptions, max_id = get_existing_descriptions_and_max_id(client, COLLECTION_NAME)
 
     points = [
-        {
-            'id': max_id + i + 1,  # Generate sequential ID
-            'vectors': {
-                dense_vector_name: embedding
-            },
-            'payload': meta
-        }
+        PointStruct(
+            id=max_id + i + 1,  # Generate sequential ID
+            vectors={dense_vector_name: embedding},
+            payload=meta
+        ).to_dict()
         for i, (doc, meta, embedding) in enumerate(zip(documents, payload, embeddings))
         if doc not in existing_descriptions
     ]
