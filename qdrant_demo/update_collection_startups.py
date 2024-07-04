@@ -287,7 +287,7 @@ def upload_embeddings(processed_file):
         print("Error: 'documents' column is missing in the DataFrame")
         return
 
-    # Debugging: Check the payload structure before uploading
+    # Debugging: Check the payload structure before and after adding 'document' field
     print("Sample payload before adding 'document' field:")
     print(payload[0] if payload else "No payload data")
 
@@ -302,7 +302,7 @@ def upload_embeddings(processed_file):
         client.create_collection(
             collection_name=COLLECTION_NAME,
             vectors_config={
-                dense_vector_name: VectorParams(size=384,
+                dense_vector_name: VectorParams(size=384,  # Ensure this matches the actual vector size
                                                 distance=Distance.COSINE,
                                                 hnsw_config=None,
                                                 quantization_config=models.ScalarQuantization(
