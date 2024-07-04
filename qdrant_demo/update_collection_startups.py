@@ -105,7 +105,7 @@ def upload_embeddings(processed_file):
             print(f"Failed to upload points: {response}")
 
         client.update_collection(
-            collection_name="{collection_name}",
+            collection_name="COLLECTION_NAME",
             optimizer_config=models.OptimizersConfigDiff(indexing_threshold=20000),
         )
 
