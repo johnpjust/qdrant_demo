@@ -253,7 +253,7 @@ def get_existing_descriptions_and_max_id(client, collection_name, batch_size=500
     while response:
         for hit in response:
             # Debug statement to log the payload structure
-            print(f"Payload: {hit.payload}")
+            # print(f"Payload: {hit.payload}")
             if TEXT_FIELD_NAME in hit.payload:
                 existing_descriptions.add(hit.payload[TEXT_FIELD_NAME])
             else:
