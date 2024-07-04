@@ -242,10 +242,11 @@ from qdrant_demo.config import DATA_DIR, QDRANT_URL, QDRANT_API_KEY, COLLECTION_
 
 dense_vector_name = EMBEDDINGS_MODEL.split(('/'))[-1]
 
+
 def get_existing_descriptions_and_max_id(client, collection_name, batch_size=5000):
     existing_descriptions = set()
     max_id = 0
-    response, _ = client.scroll(
+    response, next_offset = client.scroll(
         collection_name=collection_name,
         limit=batch_size,
     )
@@ -259,16 +260,21 @@ def get_existing_descriptions_and_max_id(client, collection_name, batch_size=500
             else:
                 print(f"Missing field '{TEXT_FIELD_NAME}' in payload: {hit.payload}")
             max_id = max(max_id, int(hit.id))
+
+        if next_offset is None:
+            break  # No more results to process
+
         try:
-            response, _ = client.scroll(
+            response, next_offset = client.scroll(
                 collection_name=collection_name,
                 limit=batch_size,
-                offset=response[-1].id
+                offset=next_offset
             )
         except Exception as e:
             print(f"Error during scroll: {e}")
             break
     return existing_descriptions, max_id
+
 
 def upload_embeddings(processed_file):
     client = QdrantClient(
@@ -375,7 +381,7 @@ def upload_embeddings(processed_file):
 
         print("Collection update completed.")
 
+
 if __name__ == '__main__':
     processed_file_ = os.path.join(DATA_DIR, 'processed_data.parquet')
     upload_embeddings(processed_file_)
-
