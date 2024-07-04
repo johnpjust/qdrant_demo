@@ -1,9 +1,8 @@
 import os
 import pandas as pd
 
-from qdrant_client import grpc
+from qdrant_client.grpc import Distance, PointStruct, VectorParams
 from qdrant_client import QdrantClient, models
-from qdrant_client.models import VectorParams, Distance
 from tqdm import tqdm
 
 
@@ -75,7 +74,8 @@ def upload_embeddings(processed_file):
     existing_descriptions, max_id = get_existing_descriptions_and_max_id(client, COLLECTION_NAME)
 
     points = [
-          grpc.PointStruct(
+
+          PointStruct(
             id=max_id + i + 1,  # Generate sequential ID
             vector={dense_vector_name: embedding},
             payload=meta
