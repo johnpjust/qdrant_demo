@@ -3,6 +3,7 @@ import multiprocessing
 import pandas as pd
 
 from qdrant_client import QdrantClient, models
+from qdrant_client.http.models import PointStruct
 from tqdm import tqdm
 
 from qdrant_demo.config import DATA_DIR, QDRANT_URL, QDRANT_API_KEY, COLLECTION_NAME, TEXT_FIELD_NAME
@@ -65,24 +66,19 @@ def upload_embeddings(processed_file):
 
     existing_descriptions = get_existing_descriptions(client, COLLECTION_NAME)
 
-    new_documents = []
-    new_metadata = []
-    new_embeddings = []
-    for doc, meta, embed in zip(documents, payload, embeddings):
-        if doc not in existing_descriptions:
-            new_documents.append(doc)
-            new_metadata.append(meta)
-            new_embeddings.append(embed)
+    points = [
+        PointStruct(
+            vector=embedding,
+            payload=meta
+        )
+        for doc, meta, embedding in zip(documents, payload, embeddings)
+        if doc not in existing_descriptions
+    ]
 
-    if new_documents:
-        num_workers = multiprocessing.cpu_count()  # Set to number of CPU cores
-        client.add(
+    if points:
+        client.upload_points(
             collection_name=COLLECTION_NAME,
-            documents=new_documents,
-            vectors=new_embeddings,
-            metadata=new_metadata,
-            ids=tqdm(range(len(new_metadata))),
-            parallel=num_workers,
+            points=tqdm(points, desc="Uploading points")
         )
 
 
