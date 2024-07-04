@@ -69,7 +69,7 @@ def upload_embeddings(processed_file):
 
     points = [
         PointStruct(
-            id=str(max_id + i + 1),  # Generate sequential ID
+            id=max_id + i + 1,  # Generate sequential ID
             vector=embedding,
             payload=meta
         )
