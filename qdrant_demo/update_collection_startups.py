@@ -76,12 +76,27 @@ def upload_embeddings(processed_file):
         for i, (doc, meta, embedding) in enumerate(zip(documents, payload, embeddings))
         if doc not in existing_descriptions
     ]
-    print(f"Points to be uploaded: {len(points)}") #TODO delete
+
+    # if points:
+    #     client.upload_points(
+    #         collection_name=COLLECTION_NAME,
+    #         points=tqdm(points, desc="Uploading points")
+    #     )
+
     if points:
-        client.upload_points(
-            collection_name=COLLECTION_NAME,
-            points=tqdm(points, desc="Uploading points")
-        )
+        successful_uploads = 0
+        for point in tqdm(points, desc="Uploading points"):
+            try:
+                response = client.upsert(
+                    collection_name=COLLECTION_NAME,
+                    points=[point]
+                )
+                if response.status == 'ok':
+                    successful_uploads += 1
+            except Exception as e:
+                print(f"Failed to upload point {point.id}: {e}")
+
+        print(f"Successfully uploaded {successful_uploads}/{len(points)} points")
 
 if __name__ == '__main__':
     processed_file_ = os.path.join(DATA_DIR, 'processed_data.parquet')
