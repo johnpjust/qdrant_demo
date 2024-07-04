@@ -263,8 +263,7 @@ def get_existing_descriptions_and_max_id(client, collection_name, batch_size=500
             response, _ = client.scroll(
                 collection_name=collection_name,
                 limit=batch_size,
-                offset=response[-1].id,
-                timeout=10  # Add a timeout to prevent hanging
+                offset=response[-1].id
             )
         except Exception as e:
             print(f"Error during scroll: {e}")
@@ -379,3 +378,4 @@ def upload_embeddings(processed_file):
 if __name__ == '__main__':
     processed_file_ = os.path.join(DATA_DIR, 'processed_data.parquet')
     upload_embeddings(processed_file_)
+
