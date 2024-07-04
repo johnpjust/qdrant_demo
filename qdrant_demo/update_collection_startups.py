@@ -76,7 +76,7 @@ def upload_embeddings(processed_file):
         for i, (doc, meta, embedding) in enumerate(zip(documents, payload, embeddings))
         if doc not in existing_descriptions
     ]
-
+    print(f"Points to be uploaded: {len(points)}") #TODO delete
     if points:
         client.upload_points(
             collection_name=COLLECTION_NAME,
