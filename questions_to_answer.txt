@@ -7,4 +7,4 @@
 ##
 4) Figure out how that "filter" argument works (does that apply to "indexed" payload columns??)!
     If it doesn't apply to indexed payload columns, then figure out what indexed payload columns do/mean!
-5)
+5) Need the docker container (and website) to restart upon shutdown (or restart of computer)

@@ -51,10 +51,14 @@ curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
 # Clone the Qdrant demo repository
-git clone https://github.com/qdrant/qdrant_demo.git
+#git clone https://github.com/qdrant/qdrant_demo.git
+git clone https://github.com/johnpjust/qdrant_demo/
 
 # Navigate to the qdrant_demo directory
 cd qdrant_demo/
+
+# checkout the relevant branch
+git checkout johnpjust-ubuntu-24
 
 # Restore potentially missing files (if applicable)
 # git restore .dockerignore docker-compose-local.yaml docker-compose.yaml

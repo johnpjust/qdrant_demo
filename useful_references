@@ -17,3 +17,6 @@ pd.set_option('display.max_rows', None)
 https://qdrant.tech/blog/storing-multiple-vectors-per-object-in-qdrant/
 # notebook example step by step loading into qdrant (super useful)
 https://gist.github.com/kacperlukawski/961aaa7946f55110abfcd37fbe869b8f
+
+###### neural search qdrant examples #########
+https://qdrant.tech/documentation/tutorials/neural-search/

@@ -1,13 +1,13 @@
 import os
-import multiprocessing
 import pandas as pd
 
 from qdrant_client import QdrantClient, models
-from qdrant_client.http.models import PointStruct
+from qdrant_client.http.models import PointStruct, VectorParams, Distance
 from tqdm import tqdm
 
-from qdrant_demo.config import DATA_DIR, QDRANT_URL, QDRANT_API_KEY, COLLECTION_NAME, TEXT_FIELD_NAME
+from qdrant_demo.config import DATA_DIR, QDRANT_URL, QDRANT_API_KEY, COLLECTION_NAME, TEXT_FIELD_NAME, EMBEDDINGS_MODEL
 
+dense_vector_name = EMBEDDINGS_MODEL.split(('/'))[-1]
 def get_existing_descriptions_and_max_id(client, collection_name, batch_size=5000):
     existing_descriptions = set()
     max_id = 0
@@ -43,14 +43,18 @@ def upload_embeddings(processed_file):
     if not client.collection_exists(COLLECTION_NAME):
         client.create_collection(
             collection_name=COLLECTION_NAME,
-            vectors_config=client.get_fastembed_vector_params(on_disk=True),
-            quantization_config=models.ScalarQuantization(
-                scalar=models.ScalarQuantizationConfig(
-                    type=models.ScalarType.INT8,
-                    quantile=0.99,
-                    always_ram=True
-                )
-            )
+            vectors_config={dense_vector_name: VectorParams(size=384,
+                                      distance=Distance.COSINE,
+                                      hnsw_config=None,
+                                      quantization_config=models.ScalarQuantization(
+                                                        scalar=models.ScalarQuantizationConfig(
+                                                            type=models.ScalarType.INT8,
+                                                            quantile=0.99,
+                                                            always_ram=True
+                                                        )),
+                                      on_disk=True,
+                                      datatype=None,
+                                      multivector_config=None),},
         )
 
         client.create_payload_index(
@@ -70,33 +74,41 @@ def upload_embeddings(processed_file):
     points = [
         PointStruct(
             id=max_id + i + 1,  # Generate sequential ID
-            vector=embedding,
+            vector={dense_vector_name: embedding},
             payload=meta
         )
         for i, (doc, meta, embedding) in enumerate(zip(documents, payload, embeddings))
         if doc not in existing_descriptions
     ]
 
+    client.update_collection(
+        collection_name="{collection_name}",
+        optimizer_config=models.OptimizersConfigDiff(indexing_threshold=0),
+    )
+
     # if points:
     #     client.upload_points(
     #         collection_name=COLLECTION_NAME,
-    #         points=tqdm(points, desc="Uploading points")
+    #         points=tqdm(points, desc="Uploading points"),
+    #         parallel=os.cpu_count()
     #     )
 
     if points:
-        successful_uploads = 0
-        for point in tqdm(points, desc="Uploading points"):
-            try:
-                response = client.upsert(
-                    collection_name=COLLECTION_NAME,
-                    points=[point]
-                )
-                if response.status == 'ok':
-                    successful_uploads += 1
-            except Exception as e:
-                print(f"Failed to upload point {point.id}: {e}")
+        response = client.upsert(
+            collection_name=COLLECTION_NAME,
+            points=tqdm(points, desc="Uploading points"),
+        )
 
-        print(f"Successfully uploaded {successful_uploads}/{len(points)} points")
+        if response.status == 'ok':
+            print("Points uploaded successfully.")
+        else:
+            print(f"Failed to upload points: {response}")
+
+        client.update_collection(
+            collection_name="{collection_name}",
+            optimizer_config=models.OptimizersConfigDiff(indexing_threshold=20000),
+        )
+
 
 if __name__ == '__main__':
     processed_file_ = os.path.join(DATA_DIR, 'processed_data.parquet')
