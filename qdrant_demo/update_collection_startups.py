@@ -2,8 +2,8 @@ import os
 import pandas as pd
 
 
-from qdrant_client.grpc import PointStruct, VectorParams
-from qdrant_client.models import Distance
+from qdrant_client.grpc import PointStruct
+from qdrant_client.models import Distance, VectorParams
 from qdrant_client import QdrantClient, models
 from tqdm import tqdm
 
