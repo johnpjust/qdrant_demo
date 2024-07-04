@@ -275,9 +275,28 @@ def upload_embeddings(processed_file):
 
     # Load the Parquet file into a DataFrame
     df = pd.read_parquet(processed_file)
+    print("DataFrame loaded from Parquet file:")
+    print(df.head())  # Print the first few rows for inspection
+
     documents = df['documents'].tolist()
     embeddings = df['embeddings'].tolist()
     payload = df.drop(columns=['documents', 'embeddings']).to_dict(orient='records')
+
+    # Verify that 'document' field is present in the DataFrame
+    if 'documents' not in df.columns:
+        print("Error: 'documents' column is missing in the DataFrame")
+        return
+
+    # Debugging: Check the payload structure before uploading
+    print("Sample payload before adding 'document' field:")
+    print(payload[0] if payload else "No payload data")
+
+    # Add 'document' field to each payload
+    for i, doc in enumerate(documents):
+        payload[i]['document'] = doc
+
+    print("Sample payload after adding 'document' field:")
+    print(payload[0] if payload else "No payload data")
 
     if not client.collection_exists(COLLECTION_NAME):
         client.create_collection(
@@ -319,7 +338,7 @@ def upload_embeddings(processed_file):
             payload=meta
         )
         for i, (doc, meta, embedding) in enumerate(zip(documents, payload, embeddings))
-        if doc not in existing_descriptions
+        if doc not in existing_descriptions  # Use `doc` directly here as it should be part of the documents list
     ]
 
     client.update_collection(
