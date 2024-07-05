@@ -6,7 +6,7 @@ from tqdm import tqdm
 
 from qdrant_demo.config import DATA_DIR, QDRANT_URL, QDRANT_API_KEY, COLLECTION_NAME, TEXT_FIELD_NAME, EMBEDDINGS_MODEL
 
-dense_vector_name = str.lower(EMBEDDINGS_MODEL.split(('/'))[-1])
+dense_vector_name = 'fast-' + str.lower(EMBEDDINGS_MODEL.split(('/'))[-1])
 
 
 def get_existing_descriptions_and_max_id(client, collection_name, batch_size=5000):
