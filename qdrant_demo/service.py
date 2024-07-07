@@ -1,4 +1,6 @@
 import os
+import json
+from typing import Optional
 
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
@@ -24,9 +26,10 @@ text_searcher = TextSearcher(collection_name=COLLECTION_NAME)
 
 
 @app.get("/api/search")
-async def read_item(q: str, neural: bool = True):
+async def read_item(q: str, neural: bool = True, filter_: Optional[str] = None):
+    filter_dict = json.loads(filter_) if filter_ else None
     return {
-        "result": neural_searcher.search(text=q)
+        "result": neural_searcher.search(text=q, filter_=filter_dict)
         if neural else text_searcher.search(query=q)
     }
 
