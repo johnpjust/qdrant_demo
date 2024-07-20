@@ -1,0 +1,65 @@
+qdrant_demo/
+├── .github/
+│   └── workflows/
+│       └── deploy.yaml
+├── README.md
+├── docker-compose-local.yaml
+├── docker-compose.yaml
+├── frontend/
+│   ├── .env
+│   ├── .eslintrc.cjs
+│   ├── README.md
+│   ├── build_and_sync.sh
+│   ├── index.html
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── public/
+│   │   ├── NoResult.gif
+│   │   ├── error.gif
+│   │   ├── home.gif
+│   │   ├── logo.svg
+│   │   ├── logoFavicon.svg
+│   │   └── workflow.svg
+│   ├── src/
+│   │   ├── App.tsx
+│   │   ├── api/
+│   │   │   ├── axios.ts
+│   │   │   ├── constants.ts
+│   │   │   └── search.ts
+│   │   ├── components/
+│   │   │   ├── CustomHeader/
+│   │   │   │   └── index.tsx
+│   │   │   ├── DemoSearch/
+│   │   │   │   └── index.tsx
+│   │   │   ├── Logo/
+│   │   │   │   └── index.tsx
+│   │   │   ├── MainSection/
+│   │   │   │   ├── index.tsx
+│   │   │   │   └── style.tsx
+│   │   │   └── StartupCard/
+│   │   │       └── index.tsx
+│   │   ├── hooks/
+│   │   │   ├── useGetSearchResult.ts
+│   │   │   ├── useMountedRef.ts
+│   │   │   └── useMountedState.ts
+│   │   ├── main.tsx
+│   │   ├── pages/
+│   │   │   └── Home/
+│   │   │       └── index.tsx
+│   │   ├── theme/
+│   │   │   ├── ThemeProvider.tsx
+│   │   │   ├── index.tsx
+│   │   │   └── sizing.ts
+│   │   └── vite-env.d.ts
+│   ├── tsconfig.json
+│   ├── tsconfig.node.json
+│   └── vite.config.ts
+├── qdrant_demo/
+│   ├── __init__.py
+│   ├── config.py
+│   ├── init_collection_crunchbase.py
+│   ├── init_collection_startups.py
+│   ├── neural_searcher.py
+│   ├── service.py
+│   ├── text_searcher.py
+├── sync.sh

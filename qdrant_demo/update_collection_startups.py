@@ -93,6 +93,7 @@ def upload_embeddings(processed_file):
             },
         )
 
+        #TODO: probably use a prefix index here...? Try this out with startups dataset!
         client.create_payload_index(
             collection_name=COLLECTION_NAME,
             field_name=TEXT_FIELD_NAME,
@@ -104,6 +105,8 @@ def upload_embeddings(processed_file):
                 lowercase=True,
             )
         )
+
+        #TODO: create payload indexes for date and job title
 
     existing_descriptions, max_id = get_existing_descriptions_and_max_id(client, COLLECTION_NAME)
     print(f"Existing descriptions count: {len(existing_descriptions)}")
