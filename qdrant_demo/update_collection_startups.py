@@ -6,8 +6,8 @@ from tqdm import tqdm
 
 from qdrant_demo.config import DATA_DIR, QDRANT_URL, QDRANT_API_KEY, COLLECTION_NAME, TEXT_FIELD_NAME, EMBEDDINGS_MODEL
 
+# TODO: decide if we should use multipe vector embeddings (e.g. for job titles and questions separately)
 dense_vector_name = 'fast-' + str.lower(EMBEDDINGS_MODEL.split(('/'))[-1])
-
 
 def get_existing_descriptions_and_max_id(client, collection_name, batch_size=5000):
     existing_descriptions = set()
@@ -52,33 +52,17 @@ def upload_embeddings(processed_file):
     # Load the Parquet file into a DataFrame
     df = pd.read_parquet(processed_file)
     print("DataFrame loaded from Parquet file:")
-    print(df.head())  # Print the first few rows for inspection
+    # print(df.head())  # Print the first few rows for inspection
 
-    documents = df['documents'].tolist()
     embeddings = df['embeddings'].tolist()
-    payload = df.drop(columns=['documents', 'embeddings']).to_dict(orient='records')
-
-    # Verify that 'document' field is present in the DataFrame
-    if 'documents' not in df.columns:
-        print("Error: 'documents' column is missing in the DataFrame")
-        return
-
-    # Debugging: Check the payload structure before and after adding 'document' field
-    print("Sample payload before adding 'document' field:")
-    print(payload[0] if payload else "No payload data")
-
-    # Add 'document' field to each payload
-    for i, doc in enumerate(documents):
-        payload[i]['document'] = doc
-
-    print("Sample payload after adding 'document' field:")
-    print(payload[0] if payload else "No payload data")
+    df = df.rename(columns={'documents':'document'})
+    payload = df.drop(columns=['embeddings']).to_dict(orient='records')
 
     if not client.collection_exists(COLLECTION_NAME):
         client.create_collection(
             collection_name=COLLECTION_NAME,
             vectors_config={
-                dense_vector_name: VectorParams(size=384,  # Ensure this matches the actual vector size
+                dense_vector_name: VectorParams(size=len(embeddings[0]),  # Ensure this matches the actual vector size
                                                 distance=Distance.COSINE,
                                                 hnsw_config=None,
                                                 quantization_config=models.ScalarQuantization(
@@ -93,13 +77,12 @@ def upload_embeddings(processed_file):
             },
         )
 
-        #TODO: probably use a prefix index here...? Try this out with startups dataset!
         client.create_payload_index(
             collection_name=COLLECTION_NAME,
             field_name=TEXT_FIELD_NAME,
             field_schema=models.TextIndexParams(
                 type=models.TextIndexType.TEXT,
-                tokenizer=models.TokenizerType.WORD,
+                tokenizer=models.TokenizerType.PREFIX,
                 min_token_len=2,
                 max_token_len=20,
                 lowercase=True,
@@ -112,14 +95,15 @@ def upload_embeddings(processed_file):
     print(f"Existing descriptions count: {len(existing_descriptions)}")
     print(f"Max ID: {max_id}")
 
+    # TODO: this won't add points where the document is the same (e.g. where it's missing/empty string)
     points = [
         PointStruct(
             id=max_id + i + 1,  # Generate sequential ID
             vector={dense_vector_name: embedding},
             payload=meta
         )
-        for i, (doc, meta, embedding) in enumerate(zip(documents, payload, embeddings))
-        if doc not in existing_descriptions  # Use `doc` directly here as it should be part of the documents list
+        for i, (meta, embedding) in enumerate(zip(payload, embeddings))
+        if meta['document'] not in existing_descriptions  # Use `doc` directly here as it should be part of the documents list
     ]
 
     client.update_collection(

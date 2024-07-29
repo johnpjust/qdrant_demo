@@ -5,7 +5,7 @@ from qdrant_demo.config import DATA_DIR, EMBEDDINGS_MODEL
 
 
 def prepare_embeddings(input_file, output_file):
-    model = TextEmbedding(EMBEDDINGS_MODEL)  # Initialize the FastEmbed model
+    model = TextEmbedding(EMBEDDINGS_MODEL, cache_dir='./local_cache/')  # Initialize the FastEmbed model
 
     # Load the JSON data into a pandas DataFrame
     df = pd.read_json(input_file, lines=True)
