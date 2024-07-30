@@ -14,4 +14,6 @@ EMBEDDINGS_MODEL = os.environ.get("EMBEDDINGS_MODEL", "sentence-transformers/all
 EMBEDDINGS_MODEL_JOB_TITLES = os.environ.get("EMBEDDINGS_MODEL_JOB_TITLES", "BAAI/bge-small-en")
 EMBEDDINGS_MODEL_QUESTIONS = os.environ.get("EMBEDDINGS_MODEL_QUESTIONS", "thenlper/gte-large")
 
+
+
 TEXT_FIELD_NAME = "document"

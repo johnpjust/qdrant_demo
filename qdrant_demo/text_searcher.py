@@ -1,6 +1,5 @@
-import os
 import re
-
+from typing import Dict, Optional
 from qdrant_client import QdrantClient
 from qdrant_client.models import Filter, FieldCondition, MatchText
 from qdrant_demo.config import QDRANT_URL, QDRANT_API_KEY, TEXT_FIELD_NAME
@@ -14,29 +13,45 @@ class TextSearcher:
 
     def highlight(self, record, query) -> dict:
         text = record[self.highlight_field]
-
         for word in query.lower().split():
             if len(word) > 4:
                 pattern = re.compile(fr"(\b{re.escape(word)}?.?\b)", flags=re.IGNORECASE)
             else:
                 pattern = re.compile(fr"(\b{re.escape(word)}\b)", flags=re.IGNORECASE)
             text = re.sub(pattern, r"<b>\1</b>", text)
-
         record[self.highlight_field] = text
         return record
 
-    def search(self, query, top=5):
+    def search(self, query, filter_: Optional[Dict] = None, top=5):
         hits = self.qdrant_client.scroll(
             collection_name=self.collection_name,
-            scroll_filter=Filter(
+            scroll_filter=Filter(**filter_) if filter_ else Filter(
                 must=[
                     FieldCondition(
                         key=TEXT_FIELD_NAME,
                         match=MatchText(text=query),
                     )
-                ]),
+                ]
+            ),
             with_payload=True,
             with_vectors=False,
             limit=top
         )
         return [self.highlight(hit.payload, query) for hit in hits[0]]
+
+    # ######################## Old Code #################################
+    # def search(self, query, top=5):
+    #     hits = self.qdrant_client.scroll(
+    #         collection_name=self.collection_name,
+    #         scroll_filter=Filter(
+    #             must=[
+    #                 FieldCondition(
+    #                     key=TEXT_FIELD_NAME,
+    #                     match=MatchText(text=query),
+    #                 )
+    #             ]),
+    #         with_payload=True,
+    #         with_vectors=False,
+    #         limit=top
+    #     )
+    #     return [self.highlight(hit.payload, query) for hit in hits[0]]

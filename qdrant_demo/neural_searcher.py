@@ -1,5 +1,5 @@
 import time
-from typing import List
+from typing import List, Dict, Optional
 
 from qdrant_client import QdrantClient
 from qdrant_client.http.models.models import Filter
@@ -18,7 +18,7 @@ class NeuralSearcher:
         self.qdrant_client = QdrantClient(url=QDRANT_URL, api_key=QDRANT_API_KEY, prefer_grpc=True)
         self.qdrant_client.set_model(EMBEDDINGS_MODEL, cache_dir='./local_cache/')
 
-    def search(self, text: str, filter_: dict = None, n_limit=5) -> List[dict]:
+    def search(self, text: str, filter_: Optional[dict] = None, n_limit=5) -> List[dict]:
         start_time = time.time()
         hits = self.qdrant_client.query(
             collection_name=self.collection_name,
@@ -28,6 +28,7 @@ class NeuralSearcher:
         )
         print(f"Search took {time.time() - start_time} seconds")
         return [hit.metadata for hit in hits]
+
 
     # def search2(self, text: str, filter_: dict = None, n_limit=5) -> List[dict]:
     #     start_time = time.time()

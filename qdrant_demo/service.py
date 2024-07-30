@@ -1,9 +1,7 @@
 import os
-import json
-from typing import Optional
-
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from fastapi.staticfiles import StaticFiles
+from typing import Optional, Dict
 
 from qdrant_demo.config import COLLECTION_NAME, STATIC_DIR
 from qdrant_demo.neural_searcher import NeuralSearcher
@@ -24,15 +22,23 @@ app.add_middleware(
 neural_searcher = NeuralSearcher(collection_name=COLLECTION_NAME)
 text_searcher = TextSearcher(collection_name=COLLECTION_NAME)
 
-
 @app.get("/api/search")
-async def read_item(q: str, neural: bool = True, filter_: Optional[str] = None):
-    filter_dict = json.loads(filter_) if filter_ else None
+async def read_item(
+    q: str,
+    neural: bool = True,
+    filters: Optional[Dict[str, str]] = Query(None),
+    filterType: str = "should"
+):
+    filter_dict = {
+        "must" if filterType == "must" else "should": [
+            {"key": key, "match": {"text": value}} for key, value in filters.items() if value
+        ]
+    } if filters else None
+
     return {
         "result": neural_searcher.search(text=q, filter_=filter_dict)
-        if neural else text_searcher.search(query=q)
+        if neural else text_searcher.search(query=q, filter_=filter_dict)
     }
-
 
 # Mount the static files directory once the search endpoint is defined
 if os.path.exists(STATIC_DIR):
@@ -42,3 +48,51 @@ if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
+
+
+################################# old code ################################################
+# import os
+# import json
+# from typing import Optional
+#
+# from fastapi import FastAPI
+# from fastapi.staticfiles import StaticFiles
+#
+# from qdrant_demo.config import COLLECTION_NAME, STATIC_DIR
+# from qdrant_demo.neural_searcher import NeuralSearcher
+# from qdrant_demo.text_searcher import TextSearcher
+#
+# from fastapi.middleware.cors import CORSMiddleware
+#
+# app = FastAPI()
+#
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["*"],
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
+#
+# neural_searcher = NeuralSearcher(collection_name=COLLECTION_NAME)
+# text_searcher = TextSearcher(collection_name=COLLECTION_NAME)
+#
+#
+# @app.get("/api/search")
+# async def read_item(q: str, neural: bool = True, filter_: Optional[str] = None):
+#     filter_dict = json.loads(filter_) if filter_ else None
+#     return {
+#         "result": neural_searcher.search(text=q, filter_=filter_dict)
+#         if neural else text_searcher.search(query=q)
+#     }
+#
+#
+# # Mount the static files directory once the search endpoint is defined
+# if os.path.exists(STATIC_DIR):
+#     app.mount("/", StaticFiles(directory=STATIC_DIR, html=True))
+#
+# if __name__ == "__main__":
+#     import uvicorn
+#
+#     uvicorn.run(app, host="0.0.0.0", port=8000)

@@ -6,7 +6,6 @@ from tqdm import tqdm
 
 from qdrant_demo.config import DATA_DIR, QDRANT_URL, QDRANT_API_KEY, COLLECTION_NAME, TEXT_FIELD_NAME, EMBEDDINGS_MODEL
 
-# TODO: decide if we should use multipe vector embeddings (e.g. for job titles and questions separately)
 dense_vector_name = 'fast-' + str.lower(EMBEDDINGS_MODEL.split(('/'))[-1])
 
 def get_existing_descriptions_and_max_id(client, collection_name, batch_size=5000):
@@ -58,9 +57,13 @@ def upload_embeddings(processed_file):
     df = df.rename(columns={'documents':'document'})
     payload = df.drop(columns=['embeddings']).to_dict(orient='records')
 
+
+    # TODO: use sparse vectors or hybrid search: https://qdrant.tech/documentation/tutorials/hybrid-search-fastembed/
+    # TODO: decide if we should use multiple vector embeddings (e.g. for job titles and questions separately)
     if not client.collection_exists(COLLECTION_NAME):
         client.create_collection(
             collection_name=COLLECTION_NAME,
+            sparse_vectors_config={},
             vectors_config={
                 dense_vector_name: VectorParams(size=len(embeddings[0]),  # Ensure this matches the actual vector size
                                                 distance=Distance.COSINE,
@@ -94,6 +97,8 @@ def upload_embeddings(processed_file):
     existing_descriptions, max_id = get_existing_descriptions_and_max_id(client, COLLECTION_NAME)
     print(f"Existing descriptions count: {len(existing_descriptions)}")
     print(f"Max ID: {max_id}")
+
+    # TODO: use sparse vectors --> https://qdrant.tech/articles/sparse-vectors/
 
     # TODO: this won't add points where the document is the same (e.g. where it's missing/empty string)
     points = [

@@ -4,16 +4,4 @@
 3) More generally, implement multiple vector search options (multiple columns)...(do we need multiple vector configs then in the create_collection?)
 4) Note - using fastembed during specification of the collection appears to allow more dynamic/flexibility in defining the models through fastembed later.  However, does this approach allow multiple vector embedding columns?
     As far as I can tell, just specify a dictionary for the vector embeddings upon create_collection:  https://gist.github.com/kacperlukawski/961aaa7946f55110abfcd37fbe869b8f
-##
-4) Figure out how that "filter" argument works (does that apply to "indexed" payload columns??)!
-    If it doesn't apply to indexed payload columns, then figure out what indexed payload columns do/mean!
 5) Need the docker container (and website) to restart upon shutdown (or restart of computer)
-7) for some reason the TEXT_FIELD_NAME ("document") is not in 50 of the 1000 records (even though all 1000 show up in querying.
-        The math doesn't add up here...since all 1000 show up without printing anything is missing....
-            for hit in response:
-                print(f"Processing hit: {hit.id}")
-                if TEXT_FIELD_NAME in hit.payload:
-                    existing_descriptions.add(hit.payload[TEXT_FIELD_NAME])
-                else:
-                    print(f"Missing field '{TEXT_FIELD_NAME}' in payload: {hit.payload}")
-                max_id = max(max_id, int(hit.id))

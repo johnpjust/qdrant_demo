@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-from fastembed import TextEmbedding
+from fastembed import TextEmbedding, SparseTextEmbedding
 from qdrant_demo.config import DATA_DIR, EMBEDDINGS_MODEL
 
 
