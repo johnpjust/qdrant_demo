@@ -6,12 +6,17 @@ import {
   TextInput,
   SegmentedControl,
   Select,
+  Box,
+  Loader,
+  Grid,
+  Image,
 } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { useStyles } from "./style";
 import useMountedState from "@/hooks/useMountedState";
 import { useGetSearchResult } from "@/hooks/useGetSearchResult";
 import { getHotkeyHandler } from "@mantine/hooks";
+import DemoSearch from "../DemoSearch";
 
 export function Main() {
   const { classes } = useStyles();
@@ -23,12 +28,20 @@ export function Main() {
     document: "",
   });
   const [filterType, setFilterType] = useMountedState<string | null>("should");
-  const { getSearch, resetData } = useGetSearchResult();
+  const { data, error, loading, getSearch, resetData } = useGetSearchResult();
   const [isNeural, setIsNeural] = useMountedState(true);
 
   const handleSubmit = () => {
     if (query) {
       getSearch(query, isNeural, filters, filterType ?? "should");
+    }
+  };
+
+  const onClickFindSimilar = (data: string) => {
+    if (data) {
+      resetData();
+      setQuery(data);
+      getSearch(data, isNeural, filters, filterType ?? "should");
     }
   };
 
@@ -130,10 +143,107 @@ export function Main() {
             onChange={(value) => setFilterType(value)}
           />
         </Container>
-      </div>
-    </Container>
-  );
-}
+
+        <DemoSearch handleDemoSearch={onClickFindSimilar} />
+        <Container className={classes.viewResult}>
+          {loading ? (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+              }}
+            >
+              <Loader size="xl" color="Primary.2" variant="bars" />
+            </Box>
+          ) : error ? (
+            <Box
+              sx={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <Image maw={240} src="./error.gif" alt="No results found." />
+
+              <Text size="lg" color="dimmed" className={classes.description}>
+                Error: {error}
+              </Text>
+            </Box>
+          ) : data?.result ? (
+            <Grid mt={"md"}>
+              {data.result.length > 0 ? (
+                <table className={classes.table}>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Alt</th>
+                      <th>City</th>
+                      <th>Description</th>
+                      <th>Homepage URL</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.result.map((item) => (
+                      <tr key={item.uuid}>
+                        <td>{item.name}</td>
+                        <td>{item.alt}</td>
+                        <td>{item.city}</td>
+                        <td>{item.document}</td>
+                        <td><a href={item.homepage_url} target="_blank" rel="noopener noreferrer">Link</a></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ) : (
+                <Box
+                      sx={{
+                        width: "100%",
+                        display: "flex",
+                        justifyContent: "center",
+                        flexDirection: "column",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Image
+                        maw={240}
+                        src="./NoResult.gif"
+                        alt="No results found."
+                      />
+
+                      <Text
+                        size="lg"
+                        color="dimmed"
+                        className={classes.description}
+                      >
+                        No results found. Try to use another query.
+                      </Text>
+                    </Box>
+                  )}
+                </Grid>
+              ) : (
+                <Box
+                  sx={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <Image maw={240} src="./home.gif" alt="No results found." />
+
+                  <Text size="lg" color="dimmed" className={classes.description}>
+                    Enter a query to start searching.
+                  </Text>
+                </Box>
+              )}
+            </Container>
+          </div>
+        </Container>
+      );
+    }
 
 
 /************************************** old code *********************************/
