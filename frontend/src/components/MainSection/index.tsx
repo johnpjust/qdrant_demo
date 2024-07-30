@@ -28,7 +28,7 @@ export function Main() {
 
   const handleSubmit = () => {
     if (query) {
-      getSearch(query, isNeural, filters, filterType);
+      getSearch(query, isNeural, filters, filterType ?? "should");
     }
   };
 
@@ -56,7 +56,7 @@ export function Main() {
             onChange={(value) => {
               setIsNeural(value === "neural");
               resetData();
-              query && getSearch(query, value === "neural", filters, filterType);
+              query && getSearch(query, value === "neural", filters, filterType ?? "should");
             }}
             size="md"
             color="Primary.2"
@@ -134,7 +134,6 @@ export function Main() {
     </Container>
   );
 }
-
 
 
 /************************************** old code *********************************/
