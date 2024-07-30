@@ -76,7 +76,7 @@ export const useStyles = createStyles((theme) => ({
 }));
 
 
-################################# old code #############################################
+/******************************** old code **************************************/
 // import { createStyles, rem } from "@mantine/core";
 //
 // export const useStyles = createStyles((theme) => ({
