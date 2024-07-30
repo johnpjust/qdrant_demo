@@ -4,10 +4,6 @@ import {
   Button,
   Container,
   TextInput,
-  Loader,
-  Box,
-  Grid,
-  Image,
   SegmentedControl,
   Select,
 } from "@mantine/core";
@@ -26,21 +22,13 @@ export function Main() {
     city: "",
     document: "",
   });
-  const [filterType, setFilterType] = useMountedState("should");
-  const { data, error, loading, getSearch, resetData } = useGetSearchResult();
+  const [filterType, setFilterType] = useMountedState<string | null>("should");
+  const { getSearch, resetData } = useGetSearchResult();
   const [isNeural, setIsNeural] = useMountedState(true);
 
   const handleSubmit = () => {
     if (query) {
       getSearch(query, isNeural, filters, filterType);
-    }
-  };
-
-  const onClickFindSimilar = (data: string) => {
-    if (data) {
-      resetData();
-      setQuery(data);
-      getSearch(data, isNeural, filters, filterType);
     }
   };
 
@@ -142,12 +130,11 @@ export function Main() {
             onChange={(value) => setFilterType(value)}
           />
         </Container>
-
-        {/* ... Rest of the component */}
       </div>
     </Container>
   );
 }
+
 
 
 /************************************** old code *********************************/
