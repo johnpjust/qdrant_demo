@@ -1,7 +1,4 @@
-// frontend/src/components/MainSection/index.tsx
 import {
-  Title,
-  Text,
   Button,
   Container,
   TextInput,
@@ -50,105 +47,85 @@ export function Main() {
     { headerName: "Name", field: "name" },
   ];
 
-  // Add console logs to verify data
-  console.log("Component Rendered");
-  console.log("rowData:", rowData);
-  console.log("columnDefs:", columnDefs);
-
   return (
     <Container className={classes.wrapper} size="100%"> {/* Use full width */}
-      <div className={classes.inner}>
-        <Title className={classes.title}>
-          Startup{" "}
-          <Text component="span" className={classes.highlight} inherit>
-            Semantic search
-          </Text>{" "}
-          with Qdrant
-        </Title>
-        <Text size="lg" color="dimmed" className={classes.description}>
-          This demo uses short descriptions of startups to perform a semantic
-          search...
-        </Text>
-        <Container p={0} size={600} className={classes.controls}>
-          <SegmentedControl
-            radius={30}
-            data={[
-              { label: "Neural", value: "neural" },
-              { label: "Text", value: "text" },
-            ]}
-            onChange={(value) => {
-              setIsNeural(value === "neural");
-              resetData();
-              query && getSearch(query, value === "neural");
+      <Container p={0} size={600} className={classes.controls}>
+        <SegmentedControl
+          radius={30}
+          data={[
+            { label: "Neural", value: "neural" },
+            { label: "Text", value: "text" },
+          ]}
+          onChange={(value) => {
+            setIsNeural(value === "neural");
+            resetData();
+            query && getSearch(query, value === "neural");
+          }}
+          size="md"
+          color="Primary.2"
+          className={classes.control}
+          value={isNeural ? "neural" : "text"}
+        />
+        <TextInput
+          radius={30}
+          size="md"
+          icon={<IconSearch color="#102252" />}
+          placeholder="Enter a query"
+          rightSection={
+            <Button
+              className={classes.inputRightSection}
+              radius={30}
+              size={"md"}
+              variant="filled"
+              color="Primary.2"
+              onClick={handleSubmit}
+            >
+              Search
+            </Button>
+          }
+          rightSectionWidth={"6rem"}
+          className={classes.inputArea}
+          value={query}
+          required
+          onChange={(event) => setQuery(event.currentTarget.value)}
+          onKeyDown={getHotkeyHandler([["Enter", handleSubmit]])}
+        />
+      </Container>
+
+      <DemoSearch handleDemoSearch={onClickFindSimilar} />
+      <Container className={classes.viewResult}>
+        {loading ? (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
             }}
-            size="md"
-            color="Primary.2"
-            className={classes.control}
-            value={isNeural ? "neural" : "text"}
-          />
-          <TextInput
-            radius={30}
-            size="md"
-            icon={<IconSearch color="#102252" />}
-            placeholder="Enter a query"
-            rightSection={
-              <Button
-                className={classes.inputRightSection}
-                radius={30}
-                size={"md"}
-                variant="filled"
-                color="Primary.2"
-                onClick={handleSubmit}
-              >
-                Search
-              </Button>
-            }
-            rightSectionWidth={"6rem"}
-            className={classes.inputArea}
-            value={query}
-            required
-            onChange={(event) => setQuery(event.currentTarget.value)}
-            onKeyDown={getHotkeyHandler([["Enter", handleSubmit]])}
-          />
-        </Container>
+          >
+            <Loader size="xl" color="Primary.2" variant="bars" />
+          </Box>
+        ) : error ? (
+          <Box
+            sx={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Image maw={240} src="./error.gif" alt="No results found." />
 
-        <DemoSearch handleDemoSearch={onClickFindSimilar} />
-        <Container className={classes.viewResult}>
-          {loading ? (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
-              <Loader size="xl" color="Primary.2" variant="bars" />
-            </Box>
-          ) : error ? (
-            <Box
-              sx={{
-                width: "100%",
-                display: "flex",
-                justifyContent: "center",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <Image maw={240} src="./error.gif" alt="No results found." />
-
-              <Text size="lg" color="dimmed" className={classes.description}>
-                Error: {error}
-              </Text>
-            </Box>
-          ) : (
-            <InteractiveTable rowData={rowData} columnDefs={columnDefs} />
-          )}
-        </Container>
-      </div>
+            <Text size="lg" color="dimmed">
+              Error: {error}
+            </Text>
+          </Box>
+        ) : (
+          <InteractiveTable rowData={rowData} columnDefs={columnDefs} />
+        )}
+      </Container>
     </Container>
   );
 }
-
-
 
 /************************************** old code *********************************/
 // import {

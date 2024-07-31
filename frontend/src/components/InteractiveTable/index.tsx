@@ -1,3 +1,4 @@
+// frontend/src/components/InteractiveTable/index.tsx
 import { FC } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
@@ -9,11 +10,30 @@ interface InteractiveTableProps {
 }
 
 const InteractiveTable: FC<InteractiveTableProps> = ({ rowData, columnDefs }) => {
+  const defaultColDef = {
+    resizable: true,
+    sortable: true,
+    filter: true,
+    wrapText: true, // Enable text wrapping
+    autoHeight: true, // Adjust row height based on content
+  };
+
+  const gridOptions = {
+    enableRangeSelection: true, // Enable range selection for copying
+    defaultColDef,
+    suppressHorizontalScroll: false,
+    columnDefs: columnDefs.map((col) =>
+      col.field === 'document'
+      ? { ...col, cellRenderer: (params) => params.value ? { __html: params.value } : '' }
+      : col
+    )
+  };
+
   return (
-    <div className="ag-theme-alpine" style={{ height: 600, width: '100%' }}> {/* Adjust height and width */}
+    <div className="ag-theme-alpine" style={{ height: 600, width: '100%' }}>
       <AgGridReact
         rowData={rowData}
-        columnDefs={columnDefs}
+        gridOptions={gridOptions}
         pagination={true}
         paginationPageSize={10}
         domLayout='autoHeight'
