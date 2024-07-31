@@ -1,9 +1,14 @@
-import React from 'react';
+import { FC } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 
-const InteractiveTable = ({ rowData, columnDefs }) => {
+interface InteractiveTableProps {
+  rowData: any[];
+  columnDefs: any[];
+}
+
+const InteractiveTable: FC<InteractiveTableProps> = ({ rowData, columnDefs }) => {
   return (
     <div className="ag-theme-alpine" style={{ height: 400, width: '100%' }}>
       <AgGridReact
