@@ -64,7 +64,7 @@ export function Main() {
         </Title>
         <Text size="lg" color="dimmed" className={classes.description}>
           This demo uses short descriptions of startups to perform a semantic
-          search.
+          search....
         </Text>
         <Container p={0} size={600} className={classes.controls}>
           <SegmentedControl
