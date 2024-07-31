@@ -1,3 +1,4 @@
+// frontend/src/components/InteractiveTable/index.tsx
 import { FC } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
@@ -15,6 +16,10 @@ const InteractiveTable: FC<InteractiveTableProps> = ({ rowData, columnDefs }) =>
     filter: true,
     wrapText: true,
     autoHeight: true,
+    cellStyle: {
+      whiteSpace: 'normal',
+      lineHeight: '1.2',
+    },
   };
 
   const gridOptions = {
@@ -23,7 +28,7 @@ const InteractiveTable: FC<InteractiveTableProps> = ({ rowData, columnDefs }) =>
     suppressHorizontalScroll: false,
     columnDefs: columnDefs.map((col) =>
       col.field === 'document'
-      ? { ...col, cellRenderer: (params: any) => params.value ? { __html: params.value } : '' }
+      ? { ...col, cellRenderer: (params: any) => params.value ? params.value : '' } // Correctly render HTML
       : col
     )
   };

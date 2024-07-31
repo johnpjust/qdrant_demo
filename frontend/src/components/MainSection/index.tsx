@@ -121,13 +121,15 @@ export function Main() {
             </Text>
           </Box>
         ) : (
-          <InteractiveTable rowData={rowData} columnDefs={columnDefs} />
+          <>
+            {console.log("Result Data:", rowData)} {/* Log result data */}
+            <InteractiveTable rowData={rowData} columnDefs={columnDefs} />
+          </>
         )}
       </Container>
     </Container>
   );
 }
-
 
 /************************************** old code *********************************/
 // import {
