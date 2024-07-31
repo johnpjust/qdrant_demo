@@ -22,36 +22,18 @@ class TextSearcher:
         record[self.highlight_field] = text
         return record
 
-    def search(self, query, filter_: Optional[Dict] = None, top=5):
+    def search(self, query, top=5):
         hits = self.qdrant_client.scroll(
             collection_name=self.collection_name,
-            scroll_filter=Filter(**filter_) if filter_ else Filter(
+            scroll_filter=Filter(
                 must=[
                     FieldCondition(
                         key=TEXT_FIELD_NAME,
                         match=MatchText(text=query),
                     )
-                ]
-            ),
+                ]),
             with_payload=True,
             with_vectors=False,
             limit=top
         )
         return [self.highlight(hit.payload, query) for hit in hits[0]]
-
-    # ######################## Old Code #################################
-    # def search(self, query, top=5):
-    #     hits = self.qdrant_client.scroll(
-    #         collection_name=self.collection_name,
-    #         scroll_filter=Filter(
-    #             must=[
-    #                 FieldCondition(
-    #                     key=TEXT_FIELD_NAME,
-    #                     match=MatchText(text=query),
-    #                 )
-    #             ]),
-    #         with_payload=True,
-    #         with_vectors=False,
-    #         limit=top
-    #     )
-    #     return [self.highlight(hit.payload, query) for hit in hits[0]]
