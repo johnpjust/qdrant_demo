@@ -191,37 +191,12 @@ export function Main() {
                         <td>{item.alt}</td>
                         <td>{item.city}</td>
                         <td>{item.document}</td>
+                        <td><a href={item.homepage_url} target="_blank" rel="noopener noreferrer">Link</a ```tsx
                         <td><a href={item.homepage_url} target="_blank" rel="noopener noreferrer">Link</a></td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
-              ) : (
-                <Box
-                      sx={{
-                        width: "100%",
-                        display: "flex",
-                        justifyContent: "center",
-                        flexDirection: "column",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Image
-                        maw={240}
-                        src="./NoResult.gif"
-                        alt="No results found."
-                      />
-
-                      <Text
-                        size="lg"
-                        color="dimmed"
-                        className={classes.description}
-                      >
-                        No results found. Try to use another query.
-                      </Text>
-                    </Box>
-                  )}
-                </Grid>
               ) : (
                 <Box
                   sx={{
@@ -232,18 +207,45 @@ export function Main() {
                     alignItems: "center",
                   }}
                 >
-                  <Image maw={240} src="./home.gif" alt="No results found." />
+                  <Image
+                    maw={240}
+                    src="./NoResult.gif"
+                    alt="No results found."
+                  />
 
-                  <Text size="lg" color="dimmed" className={classes.description}>
-                    Enter a query to start searching.
+                  <Text
+                    size="lg"
+                    color="dimmed"
+                    className={classes.description}
+                  >
+                    No results found. Try to use another query.
                   </Text>
                 </Box>
               )}
-            </Container>
-          </div>
+            </Grid>
+          ) : (
+            <Box
+              sx={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "center",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <Image maw={240} src="./home.gif" alt="No results found." />
+
+              <Text size="lg" color="dimmed" className={classes.description}>
+                Enter a query to start searching.
+              </Text>
+            </Box>
+          )}
         </Container>
-      );
-    }
+      </div>
+    </Container>
+  );
+}
+
 
 
 /************************************** old code *********************************/
