@@ -5,10 +5,14 @@ export const useStyles = createStyles((theme) => ({
     position: "relative",
     paddingTop: rem(120),
     paddingBottom: rem(80),
+    marginLeft: rem(20), // Adjust margins to be thinner
+    marginRight: rem(20), // Adjust margins to be thinner
 
     [theme.fn.smallerThan("sm")]: {
       paddingTop: rem(80),
       paddingBottom: rem(60),
+      marginLeft: rem(10),
+      marginRight: rem(10),
     },
   },
 
@@ -61,20 +65,7 @@ export const useStyles = createStyles((theme) => ({
   viewResult: {
     paddingTop: theme.spacing.md,
   },
-  table: {
-    width: "100%",
-    borderCollapse: "collapse",
-    "& th, & td": {
-      border: `1px solid ${theme.colors.Neutral[3]}`,
-      padding: theme.spacing.sm,
-      textAlign: "left",
-    },
-    "& th": {
-      background: theme.colors.Neutral[2],
-    },
-  },
 }));
-
 
 /******************************** old code **************************************/
 // import { createStyles, rem } from "@mantine/core";

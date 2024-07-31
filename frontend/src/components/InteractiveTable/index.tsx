@@ -14,8 +14,9 @@ const truncateText = (text: string, maxLength: number) => {
   return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
 };
 
-const HtmlCellRenderer = (params: ICellRendererParams) => {
-  return <span dangerouslySetInnerHTML={{ __html: params.value }} />;
+const HtmlCellRenderer = (params: ICellRendererParams, maxChars: number) => {
+  const truncatedText = truncateText(params.value, maxChars);
+  return <span dangerouslySetInnerHTML={{ __html: truncatedText }} />;
 };
 
 const InteractiveTable: FC<InteractiveTableProps> = ({ rowData, columnDefs, maxChars }) => {
@@ -36,10 +37,9 @@ const InteractiveTable: FC<InteractiveTableProps> = ({ rowData, columnDefs, maxC
   const onBtExport = () => {
     if (gridApi) {
       const exportParams = {
+        allColumns: true, // Export all columns
+        onlySelected: false, // Export all rows
         processCellCallback: (params: any) => {
-          if (params.column.getColId() === 'document') {
-            return params.value;
-          }
           return params.value;
         },
       };
@@ -53,7 +53,16 @@ const InteractiveTable: FC<InteractiveTableProps> = ({ rowData, columnDefs, maxC
 
   return (
     <div>
-      <div style={{ marginBottom: '10px' }}>
+      <div style={{ marginBottom: '10px', textAlign: 'center' }}> {/* Center the max characters box */}
+        <label>
+          Max Characters:
+          <input
+            type="number"
+            value={maxChars}
+            onChange={(e) => setMaxChars(Number(e.target.value))}
+            style={{ marginLeft: '10px', width: '50px' }}
+          />
+        </label>
         <button onClick={onBtExport} style={{ marginLeft: '10px' }}>
           Export CSV
         </button>
@@ -63,7 +72,7 @@ const InteractiveTable: FC<InteractiveTableProps> = ({ rowData, columnDefs, maxC
           rowData={rowData}
           columnDefs={columnDefs.map((col) =>
             col.field === 'document'
-            ? { ...col, cellRendererFramework: HtmlCellRenderer }
+            ? { ...col, cellRendererFramework: (params) => HtmlCellRenderer(params, maxChars) }
             : { ...col, valueFormatter: (params: any) => truncateText(params.value, maxChars) }
           )}
           defaultColDef={defaultColDef}

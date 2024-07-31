@@ -26,7 +26,6 @@ export function Main() {
 
   const handleSubmit = () => {
     if (query) {
-      console.log("Query submitted:", query);  // Log query submission
       getSearch(query, isNeural);
     }
   };
@@ -96,7 +95,7 @@ export function Main() {
       </Container>
 
       <DemoSearch handleDemoSearch={onClickFindSimilar} />
-      <div style={{ marginBottom: '10px' }}>
+      <div style={{ marginBottom: '10px', textAlign: 'center' }}> {/* Center the max characters box */}
         <label>
           Max Characters:
           <input
@@ -134,10 +133,7 @@ export function Main() {
             </Text>
           </Box>
         ) : (
-          <>
-            {console.log("Result Data:", rowData)} {/* Log result data */}
-            <InteractiveTable rowData={rowData} columnDefs={columnDefs} maxChars={maxChars} />
-          </>
+          <InteractiveTable rowData={rowData} columnDefs={columnDefs} maxChars={maxChars} />
         )}
       </Container>
     </Container>
