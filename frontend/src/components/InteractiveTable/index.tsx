@@ -1,4 +1,3 @@
-// frontend/src/components/InteractiveTable/index.tsx
 import { FC } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';

@@ -1,4 +1,3 @@
-// frontend/src/components/MainSection/index.tsx
 import {
   Button,
   Container,
@@ -144,7 +143,6 @@ export function Main() {
     </Container>
   );
 }
-
 
 /************************************** old code *********************************/
 // import {
