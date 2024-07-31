@@ -6,6 +6,7 @@ import {
   Box,
   Image,
   SegmentedControl,
+  Text,
 } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 import { useStyles } from "./style";
@@ -126,6 +127,7 @@ export function Main() {
     </Container>
   );
 }
+
 
 /************************************** old code *********************************/
 // import {
