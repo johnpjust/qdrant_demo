@@ -1,3 +1,4 @@
+// frontend/src/components/MainSection/index.tsx
 import {
   Title,
   Text,
@@ -6,7 +7,6 @@ import {
   TextInput,
   Loader,
   Box,
-  Grid,
   Image,
   SegmentedControl,
 } from "@mantine/core";
@@ -15,7 +15,6 @@ import { useStyles } from "./style";
 import useMountedState from "@/hooks/useMountedState";
 import { useGetSearchResult } from "@/hooks/useGetSearchResult";
 import { getHotkeyHandler } from "@mantine/hooks";
-import { StartupCard } from "../StartupCard";
 import DemoSearch from "../DemoSearch";
 import InteractiveTable from "../InteractiveTable"; // Import InteractiveTable
 
@@ -27,6 +26,7 @@ export function Main() {
 
   const handleSubmit = () => {
     if (query) {
+      console.log("Query submitted:", query);  // Log query submission
       getSearch(query, isNeural);
     }
   };
@@ -42,18 +42,21 @@ export function Main() {
   // Prepare data for the table
   const rowData = data?.result || [];
   const columnDefs = [
-    { headerName: "Name", field: "name" },
+    { headerName: "Homepage URL", field: "homepage_url" },
+    { headerName: "Alt", field: "alt" },
+    { headerName: "Logo URL", field: "logo_url" },
     { headerName: "City", field: "city" },
-    { headerName: "Homepage", field: "homepage_url" },
-    { headerName: "Description", field: "document" },
+    { headerName: "Document", field: "document" },
+    { headerName: "Name", field: "name" },
   ];
 
   // Add console logs to verify data
+  console.log("Component Rendered");
   console.log("rowData:", rowData);
   console.log("columnDefs:", columnDefs);
 
   return (
-    <Container className={classes.wrapper} size={1400}>
+    <Container className={classes.wrapper} size="100%"> {/* Use full width */}
       <div className={classes.inner}>
         <Title className={classes.title}>
           Startup{" "}
@@ -64,7 +67,7 @@ export function Main() {
         </Title>
         <Text size="lg" color="dimmed" className={classes.description}>
           This demo uses short descriptions of startups to perform a semantic
-          search....
+          search...
         </Text>
         <Container p={0} size={600} className={classes.controls}>
           <SegmentedControl
@@ -136,74 +139,15 @@ export function Main() {
                 Error: {error}
               </Text>
             </Box>
-          ) : data?.result ? (
-            <>
-              <Grid mt={"md"}>
-                {data.result.length > 0 ? (
-                  data.result.map((item) => (
-                    <Grid.Col span={12} key={item.name}>
-                      <StartupCard
-                        name={item.name}
-                        images={item.logo_url}
-                        alt={item.alt}
-                        description={item.document}
-                        link={item.homepage_url}
-                        city={item.city ?? "Unknown"}
-                        onClickFindSimilar={onClickFindSimilar}
-                        Index={item.name}
-                      />
-                    </Grid.Col>
-                  ))
-                ) : (
-                  <Box
-                    sx={{
-                      width: "100%",
-                      display: "flex",
-                      justifyContent: "center",
-                      flexDirection: "column",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Image
-                      maw={240}
-                      src="./NoResult.gif"
-                      alt="No results found."
-                    />
-
-                    <Text
-                      size="lg"
-                      color="dimmed"
-                      className={classes.description}
-                    >
-                      No results found. Try to use another query.
-                    </Text>
-                  </Box>
-                )}
-              </Grid>
-              <InteractiveTable rowData={rowData} columnDefs={columnDefs} />
-            </>
           ) : (
-            <Box
-              sx={{
-                width: "100%",
-                display: "flex",
-                justifyContent: "center",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <Image maw={240} src="./home.gif" alt="No results found." />
-
-              <Text size="lg" color="dimmed" className={classes.description}>
-                Enter a query to start searching.
-              </Text>
-            </Box>
+            <InteractiveTable rowData={rowData} columnDefs={columnDefs} />
           )}
         </Container>
       </div>
     </Container>
   );
 }
+
 
 
 /************************************** old code *********************************/
