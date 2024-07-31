@@ -3,7 +3,7 @@ import { FC, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
-import { ICellRendererParams } from 'ag-grid-community';
+import { ICellRendererParams, GridApi } from 'ag-grid-community';
 
 interface InteractiveTableProps {
   rowData: any[];
@@ -20,6 +20,7 @@ const HtmlCellRenderer = (params: ICellRendererParams) => {
 
 const InteractiveTable: FC<InteractiveTableProps> = ({ rowData, columnDefs }) => {
   const [maxChars, setMaxChars] = useState(100); // Default max characters
+  const [gridApi, setGridApi] = useState<GridApi | null>(null); // Define type for gridApi
 
   const defaultColDef = {
     resizable: true,
@@ -40,16 +41,17 @@ const InteractiveTable: FC<InteractiveTableProps> = ({ rowData, columnDefs }) =>
     columnDefs: columnDefs.map((col) =>
       col.field === 'document'
       ? { ...col, cellRendererFramework: HtmlCellRenderer }
-      : { ...col, valueFormatter: (params) => truncateText(params.value, maxChars) }
+      : { ...col, valueFormatter: (params: any) => truncateText(params.value, maxChars) }
     ),
   };
 
   const onBtExport = () => {
-    gridApi.exportDataAsCsv();
+    if (gridApi) {
+      gridApi.exportDataAsCsv();
+    }
   };
 
-  const [gridApi, setGridApi] = useState(null);
-  const onGridReady = (params) => {
+  const onGridReady = (params: any) => {
     setGridApi(params.api);
   };
 
