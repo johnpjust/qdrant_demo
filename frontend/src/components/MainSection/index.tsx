@@ -48,6 +48,10 @@ export function Main() {
     { headerName: "Description", field: "document" },
   ];
 
+  // Add console logs to verify data
+  console.log("rowData:", rowData);
+  console.log("columnDefs:", columnDefs);
+
   return (
     <Container className={classes.wrapper} size={1400}>
       <div className={classes.inner}>
@@ -200,6 +204,7 @@ export function Main() {
     </Container>
   );
 }
+
 
 /************************************** old code *********************************/
 // import {
