@@ -1,3 +1,4 @@
+// frontend/src/components/MainSection/index.tsx
 import {
   Button,
   Container,
@@ -15,10 +16,12 @@ import { useGetSearchResult } from "@/hooks/useGetSearchResult";
 import { getHotkeyHandler } from "@mantine/hooks";
 import DemoSearch from "../DemoSearch";
 import InteractiveTable from "../InteractiveTable"; // Import InteractiveTable
+import { useState } from 'react';
 
 export function Main() {
   const { classes } = useStyles();
   const [query, setQuery] = useMountedState("");
+  const [maxChars, setMaxChars] = useState(100); // Default max characters
   const { data, error, loading, getSearch, resetData } = useGetSearchResult();
   const [isNeural, setIsNeural] = useMountedState(true);
 
@@ -94,6 +97,17 @@ export function Main() {
       </Container>
 
       <DemoSearch handleDemoSearch={onClickFindSimilar} />
+      <div style={{ marginBottom: '10px' }}>
+        <label>
+          Max Characters:
+          <input
+            type="number"
+            value={maxChars}
+            onChange={(e) => setMaxChars(Number(e.target.value))}
+            style={{ marginLeft: '10px', width: '50px' }}
+          />
+        </label>
+      </div>
       <Container className={classes.viewResult}>
         {loading ? (
           <Box
@@ -123,13 +137,14 @@ export function Main() {
         ) : (
           <>
             {console.log("Result Data:", rowData)} {/* Log result data */}
-            <InteractiveTable rowData={rowData} columnDefs={columnDefs} />
+            <InteractiveTable rowData={rowData} columnDefs={columnDefs} maxChars={maxChars} />
           </>
         )}
       </Container>
     </Container>
   );
 }
+
 
 /************************************** old code *********************************/
 // import {

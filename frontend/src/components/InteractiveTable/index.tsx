@@ -1,5 +1,5 @@
 // frontend/src/components/InteractiveTable/index.tsx
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
@@ -8,6 +8,7 @@ import { ICellRendererParams, GridApi } from 'ag-grid-community';
 interface InteractiveTableProps {
   rowData: any[];
   columnDefs: any[];
+  maxChars: number; // Add maxChars as a prop
 }
 
 const truncateText = (text: string, maxLength: number) => {
@@ -18,8 +19,7 @@ const HtmlCellRenderer = (params: ICellRendererParams) => {
   return <span dangerouslySetInnerHTML={{ __html: params.value }} />;
 };
 
-const InteractiveTable: FC<InteractiveTableProps> = ({ rowData, columnDefs }) => {
-  const [maxChars, setMaxChars] = useState(100); // Default max characters
+const InteractiveTable: FC<InteractiveTableProps> = ({ rowData, columnDefs, maxChars }) => {
   const [gridApi, setGridApi] = useState<GridApi | null>(null); // Define type for gridApi
 
   const defaultColDef = {
@@ -47,7 +47,15 @@ const InteractiveTable: FC<InteractiveTableProps> = ({ rowData, columnDefs }) =>
 
   const onBtExport = () => {
     if (gridApi) {
-      gridApi.exportDataAsCsv();
+      const exportParams = {
+        processCellCallback: (params: any) => {
+          if (params.column.getColId() === 'document') {
+            return params.value;
+          }
+          return params.value;
+        },
+      };
+      gridApi.exportDataAsCsv(exportParams);
     }
   };
 
@@ -58,15 +66,6 @@ const InteractiveTable: FC<InteractiveTableProps> = ({ rowData, columnDefs }) =>
   return (
     <div>
       <div style={{ marginBottom: '10px' }}>
-        <label>
-          Max Characters:
-          <input
-            type="number"
-            value={maxChars}
-            onChange={(e) => setMaxChars(Number(e.target.value))}
-            style={{ marginLeft: '10px', width: '50px' }}
-          />
-        </label>
         <button onClick={onBtExport} style={{ marginLeft: '10px' }}>
           Export CSV
         </button>
@@ -79,6 +78,7 @@ const InteractiveTable: FC<InteractiveTableProps> = ({ rowData, columnDefs }) =>
           paginationPageSize={10}
           domLayout='autoHeight'
           onGridReady={onGridReady}
+          enableClipboard={true}  // Enable clipboard functionality
         />
       </div>
     </div>
