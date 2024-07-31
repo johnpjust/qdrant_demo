@@ -191,7 +191,6 @@ export function Main() {
                         <td>{item.alt}</td>
                         <td>{item.city}</td>
                         <td>{item.document}</td>
-                        <td><a href={item.homepage_url} target="_blank" rel="noopener noreferrer">Link</a ```tsx
                         <td><a href={item.homepage_url} target="_blank" rel="noopener noreferrer">Link</a></td>
                       </tr>
                     ))}
