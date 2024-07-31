@@ -1,8 +1,8 @@
-import { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
-import { ICellRendererParams, GridApi } from 'ag-grid-community';
+import { ICellRendererParams, GridApi, GridReadyEvent } from 'ag-grid-community';
 
 interface InteractiveTableProps {
   rowData: any[];
@@ -33,17 +33,6 @@ const InteractiveTable: FC<InteractiveTableProps> = ({ rowData, columnDefs, maxC
     },
   };
 
-  const gridOptions = {
-    enableRangeSelection: true,
-    defaultColDef,
-    suppressHorizontalScroll: false,
-    columnDefs: columnDefs.map((col) =>
-      col.field === 'document'
-      ? { ...col, cellRendererFramework: HtmlCellRenderer }
-      : { ...col, valueFormatter: (params: any) => truncateText(params.value, maxChars) }
-    ),
-  };
-
   const onBtExport = () => {
     if (gridApi) {
       const exportParams = {
@@ -58,7 +47,7 @@ const InteractiveTable: FC<InteractiveTableProps> = ({ rowData, columnDefs, maxC
     }
   };
 
-  const onGridReady = (params: any) => {
+  const onGridReady = (params: GridReadyEvent) => {
     setGridApi(params.api);
   };
 
@@ -72,12 +61,17 @@ const InteractiveTable: FC<InteractiveTableProps> = ({ rowData, columnDefs, maxC
       <div className="ag-theme-alpine" style={{ height: 600, width: '100%' }}>
         <AgGridReact
           rowData={rowData}
-          gridOptions={gridOptions}
+          columnDefs={columnDefs.map((col) =>
+            col.field === 'document'
+            ? { ...col, cellRendererFramework: HtmlCellRenderer }
+            : { ...col, valueFormatter: (params: any) => truncateText(params.value, maxChars) }
+          )}
+          defaultColDef={defaultColDef}
           pagination={true}
           paginationPageSize={10}
           domLayout='autoHeight'
           onGridReady={onGridReady}
-          enableClipboard={true}  // Enable clipboard functionality
+          enableRangeSelection={true}  // Enable range selection for clipboard functionality
         />
       </div>
     </div>
