@@ -20,6 +20,7 @@ export type searchResponse = {
 		twitter_url: string;
 		type: string;
 		uuid: string;
+		alt: string;
 	}[];
 };
 export const useGetSearchResult = () => {
