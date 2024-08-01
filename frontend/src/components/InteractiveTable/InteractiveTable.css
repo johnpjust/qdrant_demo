@@ -1,5 +1,5 @@
 .ag-grid-container {
-  padding: 0; /* Remove padding */
-  margin: 0; /* Remove margin */
-  width: 100%; /* Ensure it takes up the full width */
+  padding: 0 !important; /* Remove padding */
+  margin: 0 !important; /* Remove margin */
+  width: 100% !important; /* Ensure it takes up the full width */
 }
