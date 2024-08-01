@@ -52,7 +52,7 @@ export function Main() {
 
   return (
     <Container className={classes.wrapper} size="100%"> {/* Use full width */}
-      <Container p={0} size="100%" className={classes.controls}>
+      <Container p={0} size={600} className={classes.controls}>
         <SegmentedControl
           radius={30}
           data={[
