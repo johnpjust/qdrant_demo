@@ -1,3 +1,4 @@
+// frontend/src/components/InteractiveTable/index.tsx
 import { FC, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
@@ -15,7 +16,8 @@ const truncateText = (text: string, maxLength: number) => {
   return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
 };
 
-const HtmlCellRenderer = (params: ICellRendererParams, maxChars: number) => {
+const HtmlCellRenderer = (params: ICellRendererParams) => {
+  const maxChars = params.maxChars;
   const truncatedText = truncateText(params.value, maxChars);
   return <span dangerouslySetInnerHTML={{ __html: truncatedText }} />;
 };
@@ -54,7 +56,7 @@ const InteractiveTable: FC<InteractiveTableProps> = ({ rowData, columnDefs, maxC
 
   return (
     <div>
-      <div style={{ marginBottom: '10px', textAlign: 'center' }}> {/* Center the max characters box */}
+      <div style={{ marginBottom: '10px', textAlign: 'left' }}> {/* Center the max characters box */}
         <label>
           Max Characters:
           <input
@@ -73,7 +75,7 @@ const InteractiveTable: FC<InteractiveTableProps> = ({ rowData, columnDefs, maxC
           rowData={rowData}
           columnDefs={columnDefs.map((col) =>
             col.field === 'document'
-            ? { ...col, cellRendererFramework: (params: ICellRendererParams) => HtmlCellRenderer(params, maxChars) }
+            ? { ...col, cellRendererFramework: (params: ICellRendererParams) => HtmlCellRenderer({ ...params, maxChars }) }
             : { ...col, valueFormatter: (params: any) => truncateText(params.value, maxChars) }
           )}
           defaultColDef={defaultColDef}

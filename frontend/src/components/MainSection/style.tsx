@@ -5,8 +5,8 @@ export const useStyles = createStyles((theme) => ({
     position: "relative",
     paddingTop: rem(120),
     paddingBottom: rem(80),
-    marginLeft: rem(20), // Adjust margins to be thinner
-    marginRight: rem(20), // Adjust margins to be thinner
+    marginLeft: rem(10), // Adjust margins to be thinner
+    marginRight: rem(10), // Adjust margins to be thinner
 
     [theme.fn.smallerThan("sm")]: {
       paddingTop: rem(80),
@@ -66,6 +66,7 @@ export const useStyles = createStyles((theme) => ({
     paddingTop: theme.spacing.md,
   },
 }));
+
 
 /******************************** old code **************************************/
 // import { createStyles, rem } from "@mantine/core";
