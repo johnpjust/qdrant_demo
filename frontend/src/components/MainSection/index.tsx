@@ -77,7 +77,6 @@ export function Main() {
             <Button
               className={classes.inputRightSection}
               radius={30}
-              size={"md ```tsx
               size={"md"}
               variant="filled"
               color="Primary.2"
