@@ -1,3 +1,4 @@
+import './InteractiveTable.css';
 import { FC, useState } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
@@ -12,6 +13,7 @@ interface InteractiveTableProps {
 }
 
 const truncateText = (text: string, maxLength: number) => {
+  if (!text) return '';
   return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
 };
 
@@ -48,7 +50,7 @@ const InteractiveTable: FC<InteractiveTableProps> = ({ rowData, columnDefs, maxC
   };
 
   return (
-    <div>
+    <div className="ag-grid-container">
       <div style={{ marginBottom: '10px', textAlign: 'center' }}> {/* Center the max characters box */}
         <label>
           Max Characters:

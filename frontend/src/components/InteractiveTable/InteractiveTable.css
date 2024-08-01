@@ -1,0 +1,5 @@
+.ag-grid-container {
+  padding: 0; /* Remove padding */
+  margin: 0 auto; /* Center the container */
+  max-width: 100%; /* Ensure it takes up the full width */
+}

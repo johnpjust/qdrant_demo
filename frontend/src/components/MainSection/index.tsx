@@ -1,3 +1,4 @@
+// frontend/src/components/MainSection/index.tsx
 import {
   Button,
   Container,
