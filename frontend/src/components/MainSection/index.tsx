@@ -72,68 +72,67 @@ export function Main() {
           radius={30}
           size="md"
           icon={<IconSearch color="#102252" />}
-            placeholder="Enter a query"
-            rightSection={
-              <Button
-                className={classes.inputRightSection}
-                radius={30}
-                size="md"
-                variant="filled"
-                color="Primary.2"
-                onClick={handleSubmit}
-              >
-                Search
-              </Button>
-            }
-            rightSectionWidth={"6rem"}
-            className={classes.inputArea}
-            value={query}
-            required
-            onChange={(event) => setQuery(event.currentTarget.value)}
-            onKeyDown={getHotkeyHandler([["Enter", handleSubmit]])}
-          />
-        </Container>
-
-        <DemoSearch handleDemoSearch={onClickFindSimilar} />
-        <Container className={classes.viewResult}>
-          {loading ? (
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-              }}
+          placeholder="Enter a query"
+          rightSection={
+            <Button
+              className={classes.inputRightSection}
+              radius={30}
+              size="md"
+              variant="filled"
+              color="Primary.2"
+              onClick={handleSubmit}
             >
-              <Loader size="xl" color="Primary.2" variant="bars" />
-            </Box>
-          ) : error ? (
-            <Box
-              sx={{
-                width: "100%",
-                display: "flex",
-                justifyContent: "center",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <Image maw={240} src="./error.gif" alt="No results found." />
-
-              <Text size="lg" color="dimmed">
-                Error: {error}
-              </Text>
-            </Box>
-          ) : (
-            <InteractiveTable
-              rowData={rowData}
-              columnDefs={columnDefs}
-              maxChars={maxChars}
-              setMaxChars={setMaxChars}
-            />
-          )}
-        </Container>
+              Search
+            </Button>
+          }
+          rightSectionWidth={"6rem"}
+          className={classes.inputArea}
+          value={query}
+          required
+          onChange={(event) => setQuery(event.currentTarget.value)}
+          onKeyDown={getHotkeyHandler([["Enter", handleSubmit]])}
+        />
       </Container>
-    );
-}
 
+      <DemoSearch handleDemoSearch={onClickFindSimilar} />
+      <Container className={classes.viewResult}>
+        {loading ? (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <Loader size="xl" color="Primary.2" variant="bars" />
+          </Box>
+        ) : error ? (
+          <Box
+            sx={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "center",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            <Image maw={240} src="./error.gif" alt="No results found." />
+
+            <Text size="lg" color="dimmed">
+              Error: {error}
+            </Text>
+          </Box>
+        ) : (
+          <InteractiveTable
+            rowData={rowData}
+            columnDefs={columnDefs}
+            maxChars={maxChars}
+            setMaxChars={setMaxChars}
+          />
+        )}
+      </Container>
+    </Container>
+  );
+}
 
 /************************************** old code *********************************/
 // import {

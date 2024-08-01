@@ -67,7 +67,6 @@ export const useStyles = createStyles((theme) => ({
   },
 }));
 
-
 /******************************** old code **************************************/
 // import { createStyles, rem } from "@mantine/core";
 //
