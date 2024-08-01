@@ -15,11 +15,6 @@ const truncateText = (text: string, maxLength: number) => {
   return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
 };
 
-const HtmlCellRenderer = (params: ICellRendererParams, maxChars: number) => {
-  const truncatedText = truncateText(params.value, maxChars);
-  return <span dangerouslySetInnerHTML={{ __html: truncatedText }} />;
-};
-
 const InteractiveTable: FC<InteractiveTableProps> = ({ rowData, columnDefs, maxChars, setMaxChars }) => {
   const [gridApi, setGridApi] = useState<GridApi | null>(null); // Define type for gridApi
 
@@ -73,7 +68,7 @@ const InteractiveTable: FC<InteractiveTableProps> = ({ rowData, columnDefs, maxC
           rowData={rowData}
           columnDefs={columnDefs.map((col) =>
             col.field === 'document'
-            ? { ...col, cellRendererFramework: (params: ICellRendererParams) => HtmlCellRenderer(params, maxChars) }
+            ? { ...col, valueFormatter: (params: any) => truncateText(params.value, maxChars) }
             : { ...col, valueFormatter: (params: any) => truncateText(params.value, maxChars) }
           )}
           defaultColDef={defaultColDef}
@@ -82,6 +77,7 @@ const InteractiveTable: FC<InteractiveTableProps> = ({ rowData, columnDefs, maxC
           domLayout='autoHeight'
           onGridReady={onGridReady}
           enableRangeSelection={true}  // Enable range selection for clipboard functionality
+          suppressCopySingleCellRanges={false}  // Allow copying
         />
       </div>
     </div>

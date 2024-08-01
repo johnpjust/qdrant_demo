@@ -36,7 +36,9 @@ qdrant_demo/
 │   │   │   ├── MainSection/
 │   │   │   │   ├── index.tsx
 │   │   │   │   └── style.tsx
-│   │   │   └── StartupCard/
+│   │   │   ├── StartupCard/
+│   │   │   │   └── index.tsx
+│   │   │   └── InteractiveTable/
 │   │   │       └── index.tsx
 │   │   ├── hooks/
 │   │   │   ├── useGetSearchResult.ts
