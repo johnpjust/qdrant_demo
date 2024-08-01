@@ -77,6 +77,7 @@ export function Main() {
             <Button
               className={classes.inputRightSection}
               radius={30}
+              size={"md ```tsx
               size={"md"}
               variant="filled"
               color="Primary.2"
@@ -95,17 +96,6 @@ export function Main() {
       </Container>
 
       <DemoSearch handleDemoSearch={onClickFindSimilar} />
-      <div style={{ marginBottom: '10px', textAlign: 'center' }}> {/* Center the max characters box */}
-        <label>
-          Max Characters:
-          <input
-            type="number"
-            value={maxChars}
-            onChange={(e) => setMaxChars(Number(e.target.value))}
-            style={{ marginLeft: '10px', width: '50px' }}
-          />
-        </label>
-      </div>
       <Container className={classes.viewResult}>
         {loading ? (
           <Box
@@ -133,7 +123,12 @@ export function Main() {
             </Text>
           </Box>
         ) : (
-          <InteractiveTable rowData={rowData} columnDefs={columnDefs} maxChars={maxChars} />
+          <InteractiveTable
+            rowData={rowData}
+            columnDefs={columnDefs}
+            maxChars={maxChars}
+            setMaxChars={setMaxChars}
+          />
         )}
       </Container>
     </Container>
