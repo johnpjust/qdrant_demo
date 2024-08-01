@@ -96,7 +96,7 @@ export function Main() {
       </Container>
 
       <DemoSearch handleDemoSearch={onClickFindSimilar} />
-      <Container className={classes.viewResult}>
+      <Container className={classes.viewResult} size="100%"> {/* Use full width */}
         {loading ? (
           <Box
             sx={{
