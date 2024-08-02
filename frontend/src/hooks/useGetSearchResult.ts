@@ -20,7 +20,6 @@ export type searchResponse = {
 		twitter_url: string;
 		type: string;
 		uuid: string;
-		alt: string;
 	}[];
 };
 export const useGetSearchResult = () => {
@@ -28,11 +27,11 @@ export const useGetSearchResult = () => {
 	const [error, setError] = useMountedState<string | null>(null);
 	const [loading, setLoading] = useMountedState<boolean>(false);
 
-	const getSearch = async (query: string,neural?:boolean) => {
+	const getSearch = async (query: string, neural?: boolean, numResults: number = 5) => {
 		try {
 			setLoading(true);
 			setError(null);
-			const res = await getSearchResult({ query,neural });
+			const res = await getSearchResult({ query, neural, numResults });
 
 			switch (res.status) {
 				case StatusCodes.OK: {

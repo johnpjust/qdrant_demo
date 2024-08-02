@@ -119,6 +119,7 @@ export function Main() {
             <Image maw={240} src="./error.gif" alt="No results found." />
 
             <Text size="lg" color="dimmed">
+              Error ```typescript
               Error: {error}
             </Text>
           </Box>
