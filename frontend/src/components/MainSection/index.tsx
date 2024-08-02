@@ -1,4 +1,4 @@
-// frontend/src/components/MainSection/index.tsx
+import { useState } from 'react';
 import {
   Button,
   Container,
@@ -15,19 +15,19 @@ import useMountedState from "@/hooks/useMountedState";
 import { useGetSearchResult } from "@/hooks/useGetSearchResult";
 import { getHotkeyHandler } from "@mantine/hooks";
 import DemoSearch from "../DemoSearch";
-import InteractiveTable from "../InteractiveTable"; // Import InteractiveTable
-import { useState } from 'react';
+import InteractiveTable from "../InteractiveTable";
 
 export function Main() {
   const { classes } = useStyles();
   const [query, setQuery] = useMountedState("");
   const [maxChars, setMaxChars] = useState(100); // Default max characters
+  const [numResults, setNumResults] = useState(5); // Default number of results
   const { data, error, loading, getSearch, resetData } = useGetSearchResult();
   const [isNeural, setIsNeural] = useMountedState(true);
 
   const handleSubmit = () => {
     if (query) {
-      getSearch(query, isNeural);
+      getSearch(query, isNeural, numResults);
     }
   };
 
@@ -35,7 +35,7 @@ export function Main() {
     if (data) {
       resetData();
       setQuery(data);
-      getSearch(data, isNeural);
+      getSearch(data, isNeural, numResults);
     }
   };
 
@@ -62,7 +62,7 @@ export function Main() {
           onChange={(value) => {
             setIsNeural(value === "neural");
             resetData();
-            query && getSearch(query, value === "neural");
+            query && getSearch(query, value === "neural", numResults);
           }}
           size="md"
           color="Primary.2"
@@ -128,6 +128,8 @@ export function Main() {
             columnDefs={columnDefs}
             maxChars={maxChars}
             setMaxChars={setMaxChars}
+            numResults={numResults} // Pass numResults to the table component
+            setNumResults={setNumResults} // Pass setNumResults to the table component
           />
         )}
       </Container>

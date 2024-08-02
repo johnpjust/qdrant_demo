@@ -1,14 +1,9 @@
 import time
-from typing import List, Dict, Optional
+from typing import List, Optional
 
 from qdrant_client import QdrantClient
 from qdrant_client.http.models.models import Filter
 from qdrant_demo.config import QDRANT_URL, QDRANT_API_KEY, EMBEDDINGS_MODEL
-
-# from qdrant_client.models import SearchParams, QuantizationSearchParams
-# from fastembed import TextEmbedding
-# model = TextEmbedding(EMBEDDINGS_MODEL)  # Initialize the FastEmbed model
-# dense_vector_name = 'fast-' + str.lower(EMBEDDINGS_MODEL.split(('/'))[-1])
 
 
 class NeuralSearcher:
@@ -29,6 +24,10 @@ class NeuralSearcher:
         print(f"Search took {time.time() - start_time} seconds")
         return [hit.metadata for hit in hits]
 
+    # from qdrant_client.models import SearchParams, QuantizationSearchParams
+    # from fastembed import TextEmbedding
+    # model = TextEmbedding(EMBEDDINGS_MODEL)  # Initialize the FastEmbed model
+    # dense_vector_name = 'fast-' + str.lower(EMBEDDINGS_MODEL.split(('/'))[-1])
 
     # def search2(self, text: str, filter_: dict = None, n_limit=5) -> List[dict]:
     #     start_time = time.time()

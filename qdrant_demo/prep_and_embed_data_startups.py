@@ -11,22 +11,21 @@ def prepare_embeddings(input_file, output_file):
     df = pd.read_json(input_file, lines=True)
 
     # TODO delete this part after testing
-    df = df.iloc[:1000, :]
+    # df = df.iloc[:1000, :]
 
     # Extract descriptions for embedding and clean up the DataFrame
     documents = df['description'].tolist()
-    df = df.drop(columns=['description'])
-    df = df.rename(columns={'images': 'logo_url', 'link': 'homepage_url'})
+    # TODO leave title as "description" throughout (fix in the update collection code as well)
+    df = df.rename(columns={'images': 'logo_url', 'link': 'homepage_url', 'description': 'documents'})
 
     # FastEmbed handles parallelism internally, so just pass the documents
-    embeddings_generator = model.embed(documents)
+    embeddings_generator = model.embed(documents, parallel=None)
     embeddings = list(embeddings_generator)
 
     # Convert embeddings from ndarray to list
     embeddings = [embedding.tolist() for embedding in embeddings]
 
     # Add documents and embeddings to the DataFrame
-    df['documents'] = documents
     df['embeddings'] = embeddings
 
     # Save DataFrame to Parquet

@@ -10,6 +10,8 @@ interface InteractiveTableProps {
   columnDefs: any[];
   maxChars: number; // Add maxChars as a prop
   setMaxChars: (value: number) => void; // Add setMaxChars as a prop
+  numResults: number; // Add numResults as a prop
+  setNumResults: (value: number) => void; // Add setNumResults as a prop
 }
 
 const truncateText = (text: string, maxLength: number) => {
@@ -17,7 +19,7 @@ const truncateText = (text: string, maxLength: number) => {
   return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
 };
 
-const InteractiveTable: FC<InteractiveTableProps> = ({ rowData, columnDefs, maxChars, setMaxChars }) => {
+const InteractiveTable: FC<InteractiveTableProps> = ({ rowData, columnDefs, maxChars, setMaxChars, numResults, setNumResults }) => {
   const [gridApi, setGridApi] = useState<GridApi | null>(null); // Define type for gridApi
 
   const defaultColDef = {
@@ -51,13 +53,22 @@ const InteractiveTable: FC<InteractiveTableProps> = ({ rowData, columnDefs, maxC
 
   return (
     <div className="ag-grid-container">
-      <div style={{ marginBottom: '10px', textAlign: 'center' }}> {/* Center the max characters box */}
+      <div style={{ marginBottom: '10px', textAlign: 'center' }}> {/* Center the max characters and number of results boxes */}
         <label>
           Max Characters:
           <input
             type="number"
             value={maxChars}
             onChange={(e) => setMaxChars(Number(e.target.value))}
+            style={{ marginLeft: '10px', width: '50px' }}
+          />
+        </label>
+        <label style={{ marginLeft: '20px' }}>
+          Number of Results:
+          <input
+            type="number"
+            value={numResults}
+            onChange={(e) => setNumResults(Number(e.target.value))}
             style={{ marginLeft: '10px', width: '50px' }}
           />
         </label>

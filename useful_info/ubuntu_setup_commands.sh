@@ -158,7 +158,7 @@ npm run build
 cd ..
 
 # Start Docker containers
-docker-compose -f docker-compose-local.yaml up -d
+docker-compose -f docker-compose-local.yaml up --build -d # --build only necessary if you want to rebuild the containers
 
 # Initialize the collection
 # poetry run python -m qdrant_demo.init_collection_startups
@@ -168,3 +168,7 @@ docker-compose -f docker-compose-local.yaml up -d
 
 # run the script
 # ./setup_environment.sh
+
+############################################### other useful commands ######################
+# docker stop qdrant_demo_web qdrant_demo_qdrant && docker rm qdrant_demo_web qdrant_demo_qdrant
+# docker image prune -f

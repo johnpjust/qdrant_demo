@@ -8,8 +8,8 @@ from qdrant_demo.config import DATA_DIR, QDRANT_URL, QDRANT_API_KEY, COLLECTION_
 
 dense_vector_name = 'fast-' + str.lower(EMBEDDINGS_MODEL.split(('/'))[-1])
 
-def get_existing_descriptions_and_max_id(client, collection_name, batch_size=5000):
-    existing_descriptions = set()
+def get_existing_entries(client, collection_name, batch_size=5000):
+    existing_entries = set()
     max_id = 0
     response, next_offset = client.scroll(
         collection_name=collection_name,
@@ -21,9 +21,10 @@ def get_existing_descriptions_and_max_id(client, collection_name, batch_size=500
         for hit in response:
             print(f"Processing hit: {hit.id}")
             if TEXT_FIELD_NAME in hit.payload:
-                existing_descriptions.add(hit.payload[TEXT_FIELD_NAME])
+                entry_key = (hit.payload.get('name'), hit.payload.get('logo_url'), hit.payload.get('homepage_url'))
+                existing_entries.add(entry_key)
             else:
-                print(f"Missing field '{TEXT_FIELD_NAME}' in payload: {hit.payload}")
+                print(f"Missing fields in payload: {hit.payload}")
             max_id = max(max_id, int(hit.id))
 
         if next_offset is None:
@@ -38,8 +39,7 @@ def get_existing_descriptions_and_max_id(client, collection_name, batch_size=500
         except Exception as e:
             print(f"Error during scroll: {e}")
             break
-    return existing_descriptions, max_id
-
+    return existing_entries, max_id
 
 def upload_embeddings(processed_file):
     client = QdrantClient(
@@ -56,7 +56,6 @@ def upload_embeddings(processed_file):
     embeddings = df['embeddings'].tolist()
     df = df.rename(columns={'documents':'document'})
     payload = df.drop(columns=['embeddings']).to_dict(orient='records')
-
 
     # TODO: use sparse vectors or hybrid search: https://qdrant.tech/documentation/tutorials/hybrid-search-fastembed/
     # TODO: decide if we should use multiple vector embeddings (e.g. for job titles and questions separately)
@@ -94,13 +93,12 @@ def upload_embeddings(processed_file):
 
         #TODO: create payload indexes for date and job title
 
-    existing_descriptions, max_id = get_existing_descriptions_and_max_id(client, COLLECTION_NAME)
-    print(f"Existing descriptions count: {len(existing_descriptions)}")
+    existing_entries, max_id = get_existing_entries(client, COLLECTION_NAME)
+    print(f"Existing entries count: {len(existing_entries)}")
     print(f"Max ID: {max_id}")
 
     # TODO: use sparse vectors --> https://qdrant.tech/articles/sparse-vectors/
 
-    # TODO: this won't add points where the document is the same (e.g. where it's missing/empty string)
     points = [
         PointStruct(
             id=max_id + i + 1,  # Generate sequential ID
@@ -108,7 +106,7 @@ def upload_embeddings(processed_file):
             payload=meta
         )
         for i, (meta, embedding) in enumerate(zip(payload, embeddings))
-        if meta['document'] not in existing_descriptions  # Use `doc` directly here as it should be part of the documents list
+        if (meta['name'], meta['logo_url'], meta['homepage_url']) not in existing_entries
     ]
 
     client.update_collection(
@@ -138,7 +136,6 @@ def upload_embeddings(processed_file):
         )
 
         print("Collection update completed.")
-
 
 if __name__ == '__main__':
     processed_file_ = os.path.join(DATA_DIR, 'processed_data.parquet')

@@ -26,11 +26,11 @@ text_searcher = TextSearcher(collection_name=COLLECTION_NAME)
 
 
 @app.get("/api/search")
-async def read_item(q: str, neural: bool = True, filter_: Optional[str] = None):
+async def read_item(q: str, neural: bool = True, filter_: Optional[str] = None, n_limit: Optional[int] = 5):
     filter_dict = json.loads(filter_) if filter_ else None
     return {
-        "result": neural_searcher.search(text=q, filter_=filter_dict)
-        if neural else text_searcher.search(query=q)
+        "result": neural_searcher.search(text=q, filter_=filter_dict, n_limit=n_limit)
+        if neural else text_searcher.search(query=q, top=n_limit)
     }
 
 

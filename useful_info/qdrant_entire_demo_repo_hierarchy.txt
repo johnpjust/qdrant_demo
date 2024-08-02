@@ -38,8 +38,9 @@ qdrant_demo/
 │   │   │   │   └── style.tsx
 │   │   │   ├── StartupCard/
 │   │   │   │   └── index.tsx
-│   │   │   └── InteractiveTable/
-│   │   │       └── index.tsx
+│   │   │   ├── InteractiveTable/
+│   │   │   │   ├── index.tsx
+│   │   │   │   └── InteractiveTable.css
 │   │   ├── hooks/
 │   │   │   ├── useGetSearchResult.ts
 │   │   │   ├── useMountedRef.ts
