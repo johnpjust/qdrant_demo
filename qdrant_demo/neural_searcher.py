@@ -30,6 +30,7 @@ class NeuralSearcher:
         print(f"Search took {time.time() - start_time} seconds")
         return [hit.metadata for hit in hits]
 
+    ## TODO: use this one to return scores (could go into a distributional plot or something)
     def search2(self, text: str, filter_: dict = None, n_limit=5) -> List[dict]:
         start_time = time.time()
         hits = self.qdrant_client.search(
