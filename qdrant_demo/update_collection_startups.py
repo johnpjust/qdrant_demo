@@ -14,6 +14,7 @@ def get_existing_entries(client, collection_name, batch_size=5000):
     response, next_offset = client.scroll(
         collection_name=collection_name,
         limit=batch_size,
+
     )
 
     while response:
@@ -62,7 +63,7 @@ def upload_embeddings(processed_file):
     if not client.collection_exists(COLLECTION_NAME):
         client.create_collection(
             collection_name=COLLECTION_NAME,
-            sparse_vectors_config={},
+            # sparse_vectors_config={},
             vectors_config={
                 dense_vector_name: VectorParams(size=len(embeddings[0]),  # Ensure this matches the actual vector size
                                                 distance=Distance.COSINE,

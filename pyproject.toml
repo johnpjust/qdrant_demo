@@ -16,6 +16,7 @@ requests = "^2.25.1"
 tqdm = "^4.66.1"
 qdrant-client = {extras = ["fastembed"], version = ">=1.10.0"}
 fastembed = "^0.2.7"  # Ensure the latest version
+repo2txt = "0.1.6"
 
 [tool.poetry.dev-dependencies]
 

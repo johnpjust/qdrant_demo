@@ -11,7 +11,7 @@ def prepare_embeddings(input_file, output_file):
     df = pd.read_json(input_file, lines=True)
 
     # TODO delete this part after testing
-    # df = df.iloc[:1000, :]
+    df = df.iloc[0:2000, :]
 
     # Extract descriptions for embedding and clean up the DataFrame
     documents = df['description'].tolist()
