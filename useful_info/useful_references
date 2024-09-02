@@ -23,6 +23,9 @@ https://qdrant.tech/documentation/tutorials/neural-search/
 
 repo2txt (pypi install)
 https://github.com/donoceidon/repo2txt/pull/3
+need to change a few things in the helper and main file scripts (in folders of those names in the site-packages)
 run command:
-repo2txt -r C:\Users\jj99886\PycharmProjects\qdrant_demo -o repo2txt_output.txt --ignore-types --exclude-dir usefu
-l_info local_cache data github __pycache__ --ignore-files package-lock.json pnpm-lock.yaml README.md Dockerfile init_collection_crunchbase.py init_collection_startups.py --ignore-settings
+repo2txt -r C:\Users\jj99886\PycharmProjects\qdrant_gd_interviews -o data/repo2txt_output.txt --ignore-types --exclude-dir useful_info local_cache data github __pycache__ --ignore-files package-lock.json pnpm-lock.yaml README.md
+
+############# docker commands ################
+docker ps

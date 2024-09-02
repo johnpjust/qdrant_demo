@@ -63,9 +63,14 @@ def upload_embeddings(processed_file):
     if not client.collection_exists(COLLECTION_NAME):
         client.create_collection(
             collection_name=COLLECTION_NAME,
-            # sparse_vectors_config={},
+            # sparse_vectors_config={"questions_sparse": models.SparseVectorParams(
+            #             index=models.SparseIndexParams(
+            #                 on_disk=False,
+            #             )
+            #         )
+            #         },
             vectors_config={
-                dense_vector_name: VectorParams(size=len(embeddings[0]),  # Ensure this matches the actual vector size
+                "questions_dense": VectorParams(size=len(embeddings[0]),  # Ensure this matches the actual vector size
                                                 distance=Distance.COSINE,
                                                 hnsw_config=None,
                                                 quantization_config=models.ScalarQuantization(
